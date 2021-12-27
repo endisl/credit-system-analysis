@@ -17,7 +17,7 @@ public class LoanController {
     })
     @GetMapping
     public String hello() {
-        return "Hello Credit Manager";
+        return "Credit Manager GET operation in construction";
     }
 
 }
