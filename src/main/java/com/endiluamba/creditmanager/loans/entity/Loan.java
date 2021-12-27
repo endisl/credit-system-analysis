@@ -1,6 +1,7 @@
 package com.endiluamba.creditmanager.loans.entity;
 
 import com.endiluamba.creditmanager.customer.entity.Customer;
+import com.endiluamba.creditmanager.entity.Auditable;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-public class Loan {
+public class Loan extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
