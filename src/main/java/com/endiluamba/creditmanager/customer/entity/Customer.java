@@ -1,5 +1,6 @@
 package com.endiluamba.creditmanager.customer.entity;
 
+import com.endiluamba.creditmanager.entity.Auditable;
 import com.endiluamba.creditmanager.loans.entity.Loan;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Customer {
+public class Customer extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
