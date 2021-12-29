@@ -1,7 +1,7 @@
-package com.endiluamba.creditmanager.customer.service;
+package com.endiluamba.creditmanager.customers.service;
 
-import com.endiluamba.creditmanager.customer.mapper.CustomerMapper;
-import com.endiluamba.creditmanager.customer.repository.CustomerRepository;
+import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
+import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

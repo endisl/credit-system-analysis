@@ -1,4 +1,4 @@
-package com.endiluamba.creditmanager.customer.entity;
+package com.endiluamba.creditmanager.customers.entity;
 
 import com.endiluamba.creditmanager.entity.Auditable;
 import com.endiluamba.creditmanager.loans.entity.Loan;

@@ -1,6 +1,6 @@
 package com.endiluamba.creditmanager.loans.dto;
 
-import com.endiluamba.creditmanager.customer.entity.Customer;
+import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;

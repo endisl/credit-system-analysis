@@ -1,6 +1,6 @@
 package com.endiluamba.creditmanager.loans.entity;
 
-import com.endiluamba.creditmanager.customer.entity.Customer;
+import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.entity.Auditable;
 import lombok.Data;
 

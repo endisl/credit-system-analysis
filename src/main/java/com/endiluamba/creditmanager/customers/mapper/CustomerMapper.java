@@ -1,7 +1,7 @@
-package com.endiluamba.creditmanager.customer.mapper;
+package com.endiluamba.creditmanager.customers.mapper;
 
-import com.endiluamba.creditmanager.customer.dto.CustomerDTO;
-import com.endiluamba.creditmanager.customer.entity.Customer;
+import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
+import com.endiluamba.creditmanager.customers.entity.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

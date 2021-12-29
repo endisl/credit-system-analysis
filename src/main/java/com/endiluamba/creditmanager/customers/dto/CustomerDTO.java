@@ -1,4 +1,4 @@
-package com.endiluamba.creditmanager.customer.dto;
+package com.endiluamba.creditmanager.customers.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

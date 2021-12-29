@@ -1,4 +1,4 @@
-package com.endiluamba.creditmanager.customer.controller;
+package com.endiluamba.creditmanager.customers.controller;
 
 import io.swagger.annotations.Api;
 
