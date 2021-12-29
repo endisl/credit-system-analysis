@@ -1,4 +1,4 @@
-package com.endiluamba.creditmanager.controller;
+package com.endiluamba.creditmanager.loans.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/loans")
-public class LoanController {
+public class LoanController implements LoanControllerDocs {
 
     @ApiOperation(value = "Return a message test")
     @ApiResponses(value = {
