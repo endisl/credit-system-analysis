@@ -16,7 +16,7 @@ public class Loan extends Auditable {
     private Long id;
 
     @Column(nullable = false)
-    private Double loanAmount;
+    private double loanAmount;
 
     @Column(columnDefinition = "integer default 0")
     private int installments;
