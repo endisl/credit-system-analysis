@@ -32,7 +32,6 @@ public class CustomerDTO {
     private String rg;
 
     @NotNull
-    @NotEmpty
     private Double income;
 
     @NotNull

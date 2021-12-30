@@ -2,12 +2,6 @@ package com.endiluamba.creditmanager.customers.builder;
 
 import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
 import lombok.Builder;
-import org.hibernate.validator.constraints.br.CPF;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Builder
 public class CustomerDTOBuilder {
