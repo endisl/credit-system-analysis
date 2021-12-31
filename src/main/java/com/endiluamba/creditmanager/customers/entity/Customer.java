@@ -39,5 +39,4 @@ public class Customer extends Auditable {
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY) //EAGER
     private List<Loan> loans;
 
-
 }

@@ -20,8 +20,7 @@ import static com.endiluamba.creditmanager.utils.JsonConversionUtils.asJsonStrin
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -77,12 +76,30 @@ public class CustomerControllerTest {
 
     @Test
     void whenDELETEIsCalledThenNoContentStatusShouldBeInformed() throws Exception {
-        CustomerDTO expectedUserToDeleteDTO = customerDTOBuilder.buildCustomerDTO();
+        CustomerDTO expectedCustomerToDeleteDTO = customerDTOBuilder.buildCustomerDTO();
+        var expectedCustomerToDeleteId = expectedCustomerToDeleteDTO.getId();
 
-        doNothing().when(customerService).delete(expectedUserToDeleteDTO.getId());
+        doNothing().when(customerService).delete(expectedCustomerToDeleteId);
 
-        mockMvc.perform(delete(CUSTOMERS_API_URL_PATH + "/" + expectedUserToDeleteDTO.getId())
+        mockMvc.perform(delete(CUSTOMERS_API_URL_PATH + "/" + expectedCustomerToDeleteId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void whenPUTIsCalledThenOkStatusShouldBeReturned() throws Exception {
+        CustomerDTO expectedCustomerToUpdateDTO = customerDTOBuilder.buildCustomerDTO();
+        expectedCustomerToUpdateDTO.setName("Endi Tequeiro");
+        String expectedUpdateMessage = "Customer Endi Tequeiro with ID 1 successfully updated";
+        MessageDTO expectedUpdateMessageDTO = MessageDTO.builder().message(expectedUpdateMessage).build();
+        var expectedCustomerToUpdateId = expectedCustomerToUpdateDTO.getId();
+
+        when(customerService.update(expectedCustomerToUpdateId, expectedCustomerToUpdateDTO)).thenReturn(expectedUpdateMessageDTO);
+
+        mockMvc.perform(put(CUSTOMERS_API_URL_PATH + "/" + expectedCustomerToUpdateId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(expectedCustomerToUpdateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(expectedUpdateMessage)));
     }
 }

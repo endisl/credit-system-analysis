@@ -70,7 +70,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void whenValidUserIdIsInformedThenItShouldBeDeleted() {
+    void whenValidCustomerIdIsInformedThenItShouldBeDeleted() {
         CustomerDTO expectedDeletedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         Customer expectedDeletedCustomer = customerMapper.toModel(expectedDeletedCustomerDTO);
         var expectedDeletedCustomerId = expectedDeletedCustomerDTO.getId();
@@ -84,12 +84,39 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void whenInvalidUserIdIsInformedThenAnExceptionShouldBeThrown() {
+    void whenInvalidCustomerIdIsInformedThenAnExceptionShouldBeThrown() {
         CustomerDTO expectedDeletedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         var expectedDeletedCustomerId = expectedDeletedCustomerDTO.getId();
 
         when(customerRepository.findById(expectedDeletedCustomerId)).thenReturn(Optional.empty());
 
         assertThrows(CustomerNotFoundException.class, () -> customerService.delete(expectedDeletedCustomerId));
+    }
+
+    @Test
+    void whenExistingCustomerIsInformedThenItShouldBeUpdated() {
+        CustomerDTO expectedUpdatedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
+        expectedUpdatedCustomerDTO.setName("Endi Tequeiro");
+        Customer expectedUpdatedCustomer = customerMapper.toModel(expectedUpdatedCustomerDTO);
+        String expectedUpdateMessage = "Customer Endi Tequeiro with ID 1 successfully updated";
+        var expectedUpdatedCustomerId = expectedUpdatedCustomerDTO.getId();
+
+        when(customerRepository.findById(expectedUpdatedCustomerId)).thenReturn(Optional.of(expectedUpdatedCustomer));
+        when(customerRepository.save(expectedUpdatedCustomer)).thenReturn(expectedUpdatedCustomer);
+
+        MessageDTO updateMessage = customerService.update(expectedUpdatedCustomerId, expectedUpdatedCustomerDTO);
+
+        assertThat(expectedUpdateMessage, is(equalTo(updateMessage.getMessage())));
+    }
+
+    @Test
+    void whenNotExistingCustomerIsInformedThenAnExceptionShouldBeThrown() {
+        CustomerDTO expectedUpdatedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
+        expectedUpdatedCustomerDTO.setName("Endi Tequeiro");
+        var expectedUpdatedCustomerId = expectedUpdatedCustomerDTO.getId();
+
+        when(customerRepository.findById(expectedUpdatedCustomerId)).thenReturn(Optional.empty());
+
+        assertThrows(CustomerNotFoundException.class, () -> customerService.update(expectedUpdatedCustomerId, expectedUpdatedCustomerDTO));
     }
 }

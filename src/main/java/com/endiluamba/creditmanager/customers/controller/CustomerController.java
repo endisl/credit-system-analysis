@@ -31,4 +31,9 @@ public class CustomerController implements CustomerControllerDocs {
     public void delete(@PathVariable Long id) {
         customerService.delete(id);
     }
+
+    @PutMapping("/{id}")
+    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid CustomerDTO customerToUpdateDTO) {
+        return customerService.update(id, customerToUpdateDTO);
+    }
 }

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.endiluamba.creditmanager.customers.Utils.MessageDTOUtils.creationMessage;
+import static com.endiluamba.creditmanager.customers.Utils.MessageDTOUtils.updateMessage;
+
 @Service
 public class CustomerService {
 
@@ -31,13 +34,24 @@ public class CustomerService {
         return creationMessage(createdCustomer);
     }
 
+    public MessageDTO update(Long id, CustomerDTO customerToUpdateDTO) {
+        Customer foundCustomer = verifyAndGetIfExists(id);
+
+        customerToUpdateDTO.setId(foundCustomer.getId());
+        Customer customerToUpdate = customerMapper.toModel(customerToUpdateDTO);
+        customerToUpdate.setCreatedDate(foundCustomer.getCreatedDate());
+
+        Customer updatedCustomer = customerRepository.save(customerToUpdate);
+        return updateMessage(updatedCustomer);
+    }
+
     public void delete(Long id) {
-        verifyIfExists(id);
+        verifyAndGetIfExists(id);
         customerRepository.deleteById(id);
     }
 
-    private void verifyIfExists(Long id) {
-        customerRepository.findById(id)
+    private Customer verifyAndGetIfExists(Long id) {
+        return customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
@@ -46,14 +60,5 @@ public class CustomerService {
         if (foundCustomer.isPresent()) {
             throw new CustomerAlreadyExistsException(cpf, email);
         }
-    }
-
-    private MessageDTO creationMessage(Customer createdCustomer) {
-        String createdName = createdCustomer.getName();
-        Long createdId = createdCustomer.getId();
-        String createdCustomerMessage = String.format("Customer %s with ID %s successfully created", createdName, createdId);
-        return MessageDTO.builder()
-                .message(createdCustomerMessage)
-                .build();
     }
 }

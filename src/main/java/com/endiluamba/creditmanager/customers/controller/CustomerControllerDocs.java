@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -26,4 +27,11 @@ public interface CustomerControllerDocs {
             @ApiResponse(code = 404, message = "Customer with informed id not found")
     })
     void delete(Long id);
+
+    @ApiOperation(value = "Customer update operation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Customer successfully updated"),
+            @ApiResponse(code = 400, message = "Required Field missing or Field validation rules violated")
+    })
+    MessageDTO update(Long id, CustomerDTO customerToUpdateDTO);
 }
