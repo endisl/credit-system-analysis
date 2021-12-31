@@ -25,4 +25,10 @@ public class CustomerController implements CustomerControllerDocs {
     public MessageDTO create(@RequestBody @Valid CustomerDTO customerToCreateDTO) {
         return customerService.create(customerToCreateDTO);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        customerService.delete(id);
+    }
 }

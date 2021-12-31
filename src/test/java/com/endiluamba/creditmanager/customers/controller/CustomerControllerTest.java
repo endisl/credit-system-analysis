@@ -18,7 +18,9 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import static com.endiluamba.creditmanager.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,5 +73,16 @@ public class CustomerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(expectedCustomerToCreateDTO)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenDELETEIsCalledThenNoContentStatusShouldBeInformed() throws Exception {
+        CustomerDTO expectedUserToDeleteDTO = customerDTOBuilder.buildCustomerDTO();
+
+        doNothing().when(customerService).delete(expectedUserToDeleteDTO.getId());
+
+        mockMvc.perform(delete(CUSTOMERS_API_URL_PATH + "/" + expectedUserToDeleteDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }

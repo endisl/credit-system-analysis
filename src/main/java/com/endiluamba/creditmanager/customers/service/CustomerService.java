@@ -4,6 +4,7 @@ import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
 import com.endiluamba.creditmanager.customers.dto.MessageDTO;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.exception.CustomerAlreadyExistsException;
+import com.endiluamba.creditmanager.customers.exception.CustomerNotFoundException;
 import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
 import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,16 @@ public class CustomerService {
         Customer customerToCreate = customerMapper.toModel(customerToCreateDTO);
         Customer createdCustomer = customerRepository.save(customerToCreate);
         return creationMessage(createdCustomer);
+    }
+
+    public void delete(Long id) {
+        verifyIfExists(id);
+        customerRepository.deleteById(id);
+    }
+
+    private void verifyIfExists(Long id) {
+        customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     private void verifyIfExists(String cpf, String email) {

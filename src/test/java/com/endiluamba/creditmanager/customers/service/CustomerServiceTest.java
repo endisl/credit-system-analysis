@@ -5,6 +5,7 @@ import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
 import com.endiluamba.creditmanager.customers.dto.MessageDTO;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.exception.CustomerAlreadyExistsException;
+import com.endiluamba.creditmanager.customers.exception.CustomerNotFoundException;
 import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
 import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
@@ -68,5 +69,27 @@ public class CustomerServiceTest {
         assertThrows(CustomerAlreadyExistsException.class, () -> customerService.create(expectedDuplicatedCustomerDTO));
     }
 
+    @Test
+    void whenValidUserIdIsInformedThenItShouldBeDeleted() {
+        CustomerDTO expectedDeletedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
+        Customer expectedDeletedCustomer = customerMapper.toModel(expectedDeletedCustomerDTO);
+        var expectedDeletedCustomerId = expectedDeletedCustomerDTO.getId();
 
+        when(customerRepository.findById(expectedDeletedCustomerId)).thenReturn(Optional.of(expectedDeletedCustomer));
+        doNothing().when(customerRepository).deleteById(expectedDeletedCustomerId);
+
+        customerService.delete(expectedDeletedCustomerId);
+
+        verify(customerRepository, times(1)).deleteById(expectedDeletedCustomerId);
+    }
+
+    @Test
+    void whenInvalidUserIdIsInformedThenAnExceptionShouldBeThrown() {
+        CustomerDTO expectedDeletedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
+        var expectedDeletedCustomerId = expectedDeletedCustomerDTO.getId();
+
+        when(customerRepository.findById(expectedDeletedCustomerId)).thenReturn(Optional.empty());
+
+        assertThrows(CustomerNotFoundException.class, () -> customerService.delete(expectedDeletedCustomerId));
+    }
 }
