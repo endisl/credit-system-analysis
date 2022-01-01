@@ -1,5 +1,6 @@
 package com.endiluamba.creditmanager.customers.entity;
 
+import com.endiluamba.creditmanager.customers.enums.Role;
 import com.endiluamba.creditmanager.entity.Auditable;
 import com.endiluamba.creditmanager.loans.entity.Loan;
 import lombok.Data;
@@ -38,5 +39,9 @@ public class Customer extends Auditable {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY) //EAGER
     private List<Loan> loans;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role;
 
 }

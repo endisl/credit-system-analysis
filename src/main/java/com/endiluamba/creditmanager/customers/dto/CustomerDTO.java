@@ -1,10 +1,14 @@
 package com.endiluamba.creditmanager.customers.dto;
 
+import com.endiluamba.creditmanager.customers.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -46,4 +50,8 @@ public class CustomerDTO {
     @NotNull
     @NotEmpty
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Role role;
 }
