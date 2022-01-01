@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -30,6 +31,9 @@ public class CustomerServiceTest {
 
     @Mock
     private CustomerRepository customerRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private CustomerService customerService;
@@ -50,6 +54,7 @@ public class CustomerServiceTest {
         String expectedCustomerEmail = expectedCreatedCustomerDTO.getEmail();
 
         when(customerRepository.findByCpfOrEmail(expectedCustomerCpf, expectedCustomerEmail)).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(expectedCreatedCustomer.getPassword())).thenReturn(expectedCreatedCustomer.getPassword());
         when(customerRepository.save(expectedCreatedCustomer)).thenReturn(expectedCreatedCustomer);
 
         MessageDTO creationMessage = customerService.create(expectedCreatedCustomerDTO);
@@ -102,6 +107,7 @@ public class CustomerServiceTest {
         var expectedUpdatedCustomerId = expectedUpdatedCustomerDTO.getId();
 
         when(customerRepository.findById(expectedUpdatedCustomerId)).thenReturn(Optional.of(expectedUpdatedCustomer));
+        when(passwordEncoder.encode(expectedUpdatedCustomer.getPassword())).thenReturn(expectedUpdatedCustomer.getPassword());
         when(customerRepository.save(expectedUpdatedCustomer)).thenReturn(expectedUpdatedCustomer);
 
         MessageDTO updateMessage = customerService.update(expectedUpdatedCustomerId, expectedUpdatedCustomerDTO);

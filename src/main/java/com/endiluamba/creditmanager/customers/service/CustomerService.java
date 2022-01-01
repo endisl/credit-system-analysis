@@ -8,6 +8,7 @@ import com.endiluamba.creditmanager.customers.exception.CustomerNotFoundExceptio
 import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
 import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,14 +23,18 @@ public class CustomerService {
 
     private CustomerRepository customerRepository;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public MessageDTO create(CustomerDTO customerToCreateDTO) {
         verifyIfExists(customerToCreateDTO.getCpf(),customerToCreateDTO.getEmail());
         Customer customerToCreate = customerMapper.toModel(customerToCreateDTO);
+        customerToCreate.setPassword(passwordEncoder.encode(customerToCreate.getPassword()));
         Customer createdCustomer = customerRepository.save(customerToCreate);
         return creationMessage(createdCustomer);
     }
@@ -39,6 +44,7 @@ public class CustomerService {
 
         customerToUpdateDTO.setId(foundCustomer.getId());
         Customer customerToUpdate = customerMapper.toModel(customerToUpdateDTO);
+        customerToUpdate.setPassword(passwordEncoder.encode(customerToUpdate.getPassword()));
         customerToUpdate.setCreatedDate(foundCustomer.getCreatedDate());
 
         Customer updatedCustomer = customerRepository.save(customerToUpdate);
