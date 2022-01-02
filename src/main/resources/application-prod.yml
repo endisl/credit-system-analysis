@@ -18,3 +18,7 @@ logging:
   level:
     com:
       endiluamba: INFO
+
+jwt:
+  secret: creditmanager
+  validity: 18000
