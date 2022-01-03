@@ -8,13 +8,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
-
-@Api("customers management")
+@Api("Customers management")
 public interface CustomerControllerDocs {
     @ApiOperation(value = "Customer creation operation")
     @ApiResponses(value = {

@@ -2,6 +2,6 @@ package com.endiluamba.creditmanager.loans.controller;
 
 import io.swagger.annotations.Api;
 
-@Api("loans management")
+@Api("Loans management")
 public interface LoanControllerDocs {
 }
