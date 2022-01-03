@@ -9,6 +9,7 @@ import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
 import com.endiluamba.creditmanager.loans.entity.Loan;
 import com.endiluamba.creditmanager.loans.exception.LoanAlreadyExistsException;
+import com.endiluamba.creditmanager.loans.exception.LoanNotFoundException;
 import com.endiluamba.creditmanager.loans.mapper.LoanMapper;
 import com.endiluamba.creditmanager.loans.repository.LoanRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,5 +89,35 @@ public class LoanServiceTest {
                 any(Customer.class))).thenReturn(Optional.of(expectedDuplicatedLoan));
 
         assertThrows(LoanAlreadyExistsException.class, () -> loanService.create(authenticatedUser, expectedLoanToCreateDTO));
+    }
+
+    @Test
+    void whenExistingLoanIsInformedThenItShouldBeReturned() {
+        LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
+        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        Loan expectedFoundLoan = loanMapper.toModel(expectedFoundLoanDTO);
+
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findByIdAndCustomer(
+                eq(expectedLoanToFindDTO.getId()),
+                any(Customer.class))).thenReturn(Optional.of(expectedFoundLoan));
+
+        LoanResponseDTO foundLoanDTO = loanService.findByIdAndCustomer(authenticatedUser, expectedLoanToFindDTO.getId());
+
+        assertThat(foundLoanDTO, is(equalTo(expectedFoundLoanDTO)));
+    }
+
+    @Test
+    void whenNotExistingLoanIsInformedThenAnExceptionShouldBeThrown() {
+        LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
+        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        Loan expectedFoundLoan = loanMapper.toModel(expectedFoundLoanDTO);
+
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findByIdAndCustomer(
+                eq(expectedLoanToFindDTO.getId()),
+                any(Customer.class))).thenReturn(Optional.empty());
+
+        assertThrows(LoanNotFoundException.class, () -> loanService.findByIdAndCustomer(authenticatedUser, expectedLoanToFindDTO.getId()));
     }
 }

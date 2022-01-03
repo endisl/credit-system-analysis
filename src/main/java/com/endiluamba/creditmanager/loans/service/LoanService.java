@@ -7,9 +7,9 @@ import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
 import com.endiluamba.creditmanager.loans.entity.Loan;
 import com.endiluamba.creditmanager.loans.exception.LoanAlreadyExistsException;
+import com.endiluamba.creditmanager.loans.exception.LoanNotFoundException;
 import com.endiluamba.creditmanager.loans.mapper.LoanMapper;
 import com.endiluamba.creditmanager.loans.repository.LoanRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +41,21 @@ public class LoanService {
         return loanMapper.toDTO(createdLoan);
     }
 
+    public LoanResponseDTO findByIdAndCustomer(AuthenticatedUser authenticatedUser, Long loanId) {
+        Customer foundAuthenticatedCustomer = customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername());
+        return loanRepository.findByIdAndCustomer(loanId, foundAuthenticatedCustomer)
+                .map(loanMapper::toDTO)
+                .orElseThrow(() -> new LoanNotFoundException(loanId));
+    }
+
     private void verifyIfLoanIsAlreadySubmitted(Customer customer, LoanRequestDTO loanRequestDTO) {
         Double loanAmount = loanRequestDTO.getLoanAmount();
         Integer installments = loanRequestDTO.getInstallments();
         LocalDate firstInstallmentDate = loanRequestDTO.getFirstInstallmentDate();
 
         loanRepository.findByLoanAmountAndInstallmentsAndFirstInstallmentDateAndCustomer(loanAmount, installments, firstInstallmentDate, customer)
-                .ifPresent(duplicatedLoan -> { throw new LoanAlreadyExistsException(loanAmount, installments, firstInstallmentDate, customer.getName());});
+                .ifPresent(duplicatedLoan -> {
+                    throw new LoanAlreadyExistsException(loanAmount, installments, firstInstallmentDate, customer.getName());
+                });
     }
 }

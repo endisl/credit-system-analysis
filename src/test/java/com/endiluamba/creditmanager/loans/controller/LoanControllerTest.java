@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -79,5 +80,21 @@ public class LoanControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(expectedLoanToCreateDTO)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenGETsCalledWithValidBookIdThenOkStatusShouldBeInformed() throws Exception {
+        LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
+        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+
+        when(loanService.findByIdAndCustomer(any(AuthenticatedUser.class), eq(expectedLoanToFindDTO.getId()))).thenReturn(expectedFoundLoanDTO);
+
+        mockMvc.perform(get(LOANS_API_URL_PATH + "/" + expectedLoanToFindDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(expectedLoanToFindDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(expectedFoundLoanDTO.getId().intValue())))
+                .andExpect(jsonPath("$.loanAmount", is(expectedFoundLoanDTO.getLoanAmount())))
+                .andExpect(jsonPath("$.installments", is(expectedFoundLoanDTO.getInstallments())));
     }
 }
