@@ -63,7 +63,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void whenExistingCustomerIsInformedThenAnExceptionShouldBeThrown() {
+    void whenExistingCustomerIsInformedToCreateThenAnExceptionShouldBeThrown() {
         CustomerDTO expectedDuplicatedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         Customer expectedDuplicatedCustomer = customerMapper.toModel(expectedDuplicatedCustomerDTO);
         String expectedCustomerCpf = expectedDuplicatedCustomerDTO.getCpf();

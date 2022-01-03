@@ -20,7 +20,8 @@ public class LoanRequestDTO {
     private Double loanAmount;
 
     @NotNull
-    @Max(60)
+    @Max(60) //This requirement must be verified in LoanService in order to get a customized exception message
+    //otherwise the general message for code 400 in LoanControllerDocs or Postman will be displayed
     private Integer installments;
 
     @NotNull

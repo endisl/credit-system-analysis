@@ -67,4 +67,9 @@ public class CustomerService {
             throw new CustomerAlreadyExistsException(cpf, email);
         }
     }
+
+    public Customer verifyAndGetCustomerIfExists(String email) {
+        return customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException(email));
+    }
 }

@@ -24,7 +24,7 @@ public class LoanRequestDTOBuilder {
 
     private final CustomerDTO customerDTO = CustomerDTOBuilder.builder().build().buildCustomerDTO();
 
-    public LoanRequestDTO loanRequestDTOBuilder() {
+    public LoanRequestDTO buildLoanRequestDTO() {
         return new LoanRequestDTO(id,
                 loanAmount,
                 installments,

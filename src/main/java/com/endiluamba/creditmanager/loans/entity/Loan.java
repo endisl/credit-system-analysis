@@ -26,6 +26,4 @@ public class Loan extends Auditable {
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Customer customer;
-
-
 }

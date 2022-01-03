@@ -1,15 +1,14 @@
 package com.endiluamba.creditmanager.loans.service;
 
-import com.endiluamba.creditmanager.customers.builder.CustomerDTOBuilder;
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
-import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
-import com.endiluamba.creditmanager.customers.dto.MessageDTO;
 import com.endiluamba.creditmanager.customers.entity.Customer;
-import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
-import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
 import com.endiluamba.creditmanager.loans.builder.LoanRequestDTOBuilder;
 import com.endiluamba.creditmanager.loans.builder.LoanResponseDTOBuilder;
+import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
+import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.entity.Loan;
+import com.endiluamba.creditmanager.loans.exception.LoanAlreadyExistsException;
 import com.endiluamba.creditmanager.loans.mapper.LoanMapper;
 import com.endiluamba.creditmanager.loans.repository.LoanRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,13 +17,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,5 +53,40 @@ public class LoanServiceTest {
         loanRequestDTOBuilder = LoanRequestDTOBuilder.builder().build();
         loanResponseDTOBuilder = LoanResponseDTOBuilder.builder().build();
         authenticatedUser = new AuthenticatedUser("endi@web.com", "1234", "ADMIN");
+    }
+
+    @Test
+    void whenNewLoanIsInformedThenItShouldBeCreated() {
+        LoanRequestDTO expectedLoanToCreateDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
+        LoanResponseDTO expectedCreatedLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        Loan expectedCreatedLoan = loanMapper.toModel(expectedCreatedLoanDTO);
+
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findByLoanAmountAndInstallmentsAndFirstInstallmentDateAndCustomer(
+                eq(expectedLoanToCreateDTO.getLoanAmount()),
+                eq(expectedLoanToCreateDTO.getInstallments()),
+                eq(expectedLoanToCreateDTO.getFirstInstallmentDate()),
+                any(Customer.class))).thenReturn(Optional.empty());
+        when(loanRepository.save(any(Loan.class))).thenReturn(expectedCreatedLoan);
+
+        LoanResponseDTO createdLoanResponseDTO = loanService.create(authenticatedUser, expectedLoanToCreateDTO);
+
+        assertThat(createdLoanResponseDTO, is(equalTo(expectedCreatedLoanDTO)));
+    }
+
+    @Test
+    void whenExistingLoanIsInformedToCreateThenAnExceptionShouldBeThrown() {
+        LoanRequestDTO expectedLoanToCreateDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
+        LoanResponseDTO expectedCreatedLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        Loan expectedDuplicatedLoan = loanMapper.toModel(expectedCreatedLoanDTO);
+
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findByLoanAmountAndInstallmentsAndFirstInstallmentDateAndCustomer(
+                eq(expectedLoanToCreateDTO.getLoanAmount()),
+                eq(expectedLoanToCreateDTO.getInstallments()),
+                eq(expectedLoanToCreateDTO.getFirstInstallmentDate()),
+                any(Customer.class))).thenReturn(Optional.of(expectedDuplicatedLoan));
+
+        assertThrows(LoanAlreadyExistsException.class, () -> loanService.create(authenticatedUser, expectedLoanToCreateDTO));
     }
 }
