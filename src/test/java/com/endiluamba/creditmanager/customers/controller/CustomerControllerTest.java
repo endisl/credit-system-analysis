@@ -1,8 +1,12 @@
 package com.endiluamba.creditmanager.customers.controller;
 
 import com.endiluamba.creditmanager.customers.builder.CustomerDTOBuilder;
+import com.endiluamba.creditmanager.customers.builder.JwtRequestBuilder;
 import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
+import com.endiluamba.creditmanager.customers.dto.JwtRequest;
+import com.endiluamba.creditmanager.customers.dto.JwtResponse;
 import com.endiluamba.creditmanager.customers.dto.MessageDTO;
+import com.endiluamba.creditmanager.customers.service.AuthenticationService;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,20 +32,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CustomerControllerTest {
 
     private static final String CUSTOMERS_API_URL_PATH = "/api/v1/customers";
+
     private MockMvc mockMvc;
 
     @Mock
     private CustomerService customerService;
+
+    @Mock
+    private AuthenticationService authenticationService;
 
     @InjectMocks
     private CustomerController customerController;
 
     private CustomerDTOBuilder customerDTOBuilder;
 
+    private JwtRequestBuilder jwtRequestBuilder;
+
     @BeforeEach
     void setUp() {
         customerDTOBuilder = CustomerDTOBuilder.builder().build();
-
+        jwtRequestBuilder = JwtRequestBuilder.builder().build();
         mockMvc = MockMvcBuilders.standaloneSetup(customerController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setViewResolvers((s, locale) -> new MappingJackson2JsonView())
@@ -101,5 +111,30 @@ public class CustomerControllerTest {
                         .content(asJsonString(expectedCustomerToUpdateDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is(expectedUpdateMessage)));
+    }
+
+    @Test
+    void whenPOSTIsCalledToAuthenticateCustomerThenOkStatusShouldBeReturned() throws Exception {
+        JwtRequest jwtRequest = jwtRequestBuilder.buildJwtRequest();
+        JwtResponse expectedJwtToken = JwtResponse.builder().jwtToken("mockToken").build();
+
+        when(authenticationService.createAuthenticationToken(jwtRequest)).thenReturn(expectedJwtToken);
+
+        mockMvc.perform(post(CUSTOMERS_API_URL_PATH + "/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(jwtRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jwtToken", is(expectedJwtToken.getJwtToken())));
+    }
+
+    @Test
+    void whenPOSTIsCalledToAuthenticateCustomerWithoutPasswordThenBadRequestStatusShouldBeReturned() throws Exception {
+        JwtRequest jwtRequest = jwtRequestBuilder.buildJwtRequest();
+        jwtRequest.setPassword(null);
+
+        mockMvc.perform(post(CUSTOMERS_API_URL_PATH + "/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(jwtRequest)))
+                .andExpect(status().isBadRequest());
     }
 }

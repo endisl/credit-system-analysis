@@ -1,7 +1,10 @@
 package com.endiluamba.creditmanager.customers.service;
 
 import com.endiluamba.creditmanager.customers.builder.CustomerDTOBuilder;
+import com.endiluamba.creditmanager.customers.builder.JwtRequestBuilder;
 import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
+import com.endiluamba.creditmanager.customers.dto.JwtRequest;
+import com.endiluamba.creditmanager.customers.dto.JwtResponse;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
 import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +26,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,14 +37,38 @@ public class AuthenticationServiceTest {
     @Mock
     private CustomerRepository customerRepository;
 
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private JwtTokenManager jwtTokenManager;
+
     @InjectMocks
     private AuthenticationService authenticationService;
 
     private CustomerDTOBuilder customerDTOBuilder;
 
+    private JwtRequestBuilder jwtRequestBuilder;
+
     @BeforeEach
     void setUp() {
         customerDTOBuilder = CustomerDTOBuilder.builder().build();
+        jwtRequestBuilder = JwtRequestBuilder.builder().build();
+    }
+
+    @Test
+    void whenEmailAndPasswordAreInformedThenATokenShouldBeGenerated() {
+        JwtRequest jwtRequest = jwtRequestBuilder.buildJwtRequest();
+        CustomerDTO expectedFoundCustomerDTO = customerDTOBuilder.buildCustomerDTO();
+        Customer expectedFoundCustomer = customerMapper.toModel(expectedFoundCustomerDTO);
+        String expectedGeneratedToken = "mockToken";
+
+        when(customerRepository.findByEmail(jwtRequest.getEmail())).thenReturn(Optional.of(expectedFoundCustomer));
+        when(jwtTokenManager.generateToken(any(UserDetails.class))).thenReturn(expectedGeneratedToken);
+
+        JwtResponse generatedTokenResponse = authenticationService.createAuthenticationToken(jwtRequest);
+
+        assertThat(generatedTokenResponse.getJwtToken(), is(equalTo(expectedGeneratedToken)));
     }
 
     @Test
