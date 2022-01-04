@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanService {
@@ -46,6 +48,14 @@ public class LoanService {
         return loanRepository.findByIdAndCustomer(loanId, foundAuthenticatedCustomer)
                 .map(loanMapper::toDTO)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
+    }
+
+    public List<LoanResponseDTO> findAllByCustomer(AuthenticatedUser authenticatedUser) {
+        Customer foundAuthenticatedCustomer = customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername());
+        return loanRepository.findAllByCustomer(foundAuthenticatedCustomer)
+                .stream()
+                .map(loanMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     private void verifyIfLoanIsAlreadySubmitted(Customer customer, LoanRequestDTO loanRequestDTO) {

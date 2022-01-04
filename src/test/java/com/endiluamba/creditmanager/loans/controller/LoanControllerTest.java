@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import java.util.Collections;
+
 import static com.endiluamba.creditmanager.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,7 +85,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    void whenGETsCalledWithValidBookIdThenOkStatusShouldBeInformed() throws Exception {
+    void whenGETIsCalledWithValidBookIdThenOkStatusShouldBeInformed() throws Exception {
         LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
         LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
 
@@ -96,5 +98,19 @@ public class LoanControllerTest {
                 .andExpect(jsonPath("$.id", is(expectedFoundLoanDTO.getId().intValue())))
                 .andExpect(jsonPath("$.loanAmount", is(expectedFoundLoanDTO.getLoanAmount())))
                 .andExpect(jsonPath("$.installments", is(expectedFoundLoanDTO.getInstallments())));
+    }
+
+    @Test
+    void whenGETListIsCalledThenOkStatusShouldBeInformed() throws Exception {
+        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+
+        when(loanService.findAllByCustomer(any(AuthenticatedUser.class))).thenReturn(Collections.singletonList(expectedFoundLoanDTO));
+
+        mockMvc.perform(get(LOANS_API_URL_PATH)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is(expectedFoundLoanDTO.getId().intValue())))
+                .andExpect(jsonPath("$[0].loanAmount", is(expectedFoundLoanDTO.getLoanAmount())))
+                .andExpect(jsonPath("$[0].installments", is(expectedFoundLoanDTO.getInstallments())));
     }
 }

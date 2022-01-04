@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.List;
+
 @Api("Loans management")
 public interface LoanControllerDocs {
 
@@ -24,4 +26,10 @@ public interface LoanControllerDocs {
             @ApiResponse(code = 404, message = "Loan not found error")
     })
     LoanResponseDTO findByIdAndCustomer(AuthenticatedUser authenticatedUser, Long loanId);
+
+    @ApiOperation(value = "List all loans of an authenticated customer")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Loans list successfully found")
+    })
+    List<LoanResponseDTO> findAllByCustomer(AuthenticatedUser authenticatedUser);
 }

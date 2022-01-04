@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -110,8 +112,6 @@ public class LoanServiceTest {
     @Test
     void whenNotExistingLoanIsInformedThenAnExceptionShouldBeThrown() {
         LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
-        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
-        Loan expectedFoundLoan = loanMapper.toModel(expectedFoundLoanDTO);
 
         when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
         when(loanRepository.findByIdAndCustomer(
@@ -119,5 +119,31 @@ public class LoanServiceTest {
                 any(Customer.class))).thenReturn(Optional.empty());
 
         assertThrows(LoanNotFoundException.class, () -> loanService.findByIdAndCustomer(authenticatedUser, expectedLoanToFindDTO.getId()));
+    }
+
+    @Test
+    void whenListLoansIsCalledThenItShouldBeReturned() {
+        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        Loan expectedFoundLoan = loanMapper.toModel(expectedFoundLoanDTO);
+
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findAllByCustomer(
+                any(Customer.class))).thenReturn(Collections.singletonList(expectedFoundLoan));
+
+        List<LoanResponseDTO> returnedLoansResponseList = loanService.findAllByCustomer(authenticatedUser);
+
+        assertThat(returnedLoansResponseList.size(), is(1));
+        assertThat(returnedLoansResponseList.get(0), is(equalTo(expectedFoundLoanDTO)));
+    }
+
+    @Test
+    void whenListLoansIsCalledThenAnEmptyListShouldBeReturned() {
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findAllByCustomer(
+                any(Customer.class))).thenReturn(Collections.EMPTY_LIST);
+
+        List<LoanResponseDTO> returnedLoansResponseList = loanService.findAllByCustomer(authenticatedUser);
+
+        assertThat(returnedLoansResponseList.size(), is(0));
     }
 }

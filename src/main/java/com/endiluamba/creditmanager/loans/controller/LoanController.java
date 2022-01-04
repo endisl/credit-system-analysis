@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/loans")
@@ -33,5 +34,10 @@ public class LoanController implements LoanControllerDocs {
     public LoanResponseDTO findByIdAndCustomer(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                @PathVariable Long loanId) {
         return loanService.findByIdAndCustomer(authenticatedUser, loanId);
+    }
+
+    @GetMapping
+    public List<LoanResponseDTO> findAllByCustomer(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+        return loanService.findAllByCustomer(authenticatedUser);
     }
 }
