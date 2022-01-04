@@ -12,6 +12,7 @@ import com.endiluamba.creditmanager.loans.mapper.LoanMapper;
 import com.endiluamba.creditmanager.loans.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -58,6 +59,18 @@ public class LoanService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteByIdAndCustomer(AuthenticatedUser authenticatedUser, Long loanId) {
+        Customer foundAuthenticatedCustomer = customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername());
+        Loan foundLoanToDelete = verifyAndGetIfExists(loanId, foundAuthenticatedCustomer);
+        loanRepository.deleteByIdAndCustomer(foundLoanToDelete.getId(), foundAuthenticatedCustomer);
+    }
+
+    private Loan verifyAndGetIfExists(Long loanId, Customer foundAuthenticatedCustomer) {
+        return loanRepository.findByIdAndCustomer(loanId, foundAuthenticatedCustomer)
+                .orElseThrow(() -> new LoanNotFoundException(loanId));
+    }
+
     private void verifyIfLoanIsAlreadySubmitted(Customer customer, LoanRequestDTO loanRequestDTO) {
         Double loanAmount = loanRequestDTO.getLoanAmount();
         Integer installments = loanRequestDTO.getInstallments();
@@ -68,4 +81,5 @@ public class LoanService {
                     throw new LoanAlreadyExistsException(loanAmount, installments, firstInstallmentDate, customer.getName());
                 });
     }
+
 }

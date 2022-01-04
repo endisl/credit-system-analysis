@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LoanServiceTest {
@@ -114,9 +114,7 @@ public class LoanServiceTest {
         LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
 
         when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
-        when(loanRepository.findByIdAndCustomer(
-                eq(expectedLoanToFindDTO.getId()),
-                any(Customer.class))).thenReturn(Optional.empty());
+        when(loanRepository.findByIdAndCustomer(eq(expectedLoanToFindDTO.getId()), any(Customer.class))).thenReturn(Optional.empty());
 
         assertThrows(LoanNotFoundException.class, () -> loanService.findByIdAndCustomer(authenticatedUser, expectedLoanToFindDTO.getId()));
     }
@@ -145,5 +143,32 @@ public class LoanServiceTest {
         List<LoanResponseDTO> returnedLoansResponseList = loanService.findAllByCustomer(authenticatedUser);
 
         assertThat(returnedLoansResponseList.size(), is(0));
+    }
+
+    @Test
+    void whenExistingLoanIdIsInformedThenItShouldBeDeleted() {
+        LoanResponseDTO expectedLoanToDeleteDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        Loan expectedLoanToDelete = loanMapper.toModel(expectedLoanToDeleteDTO);
+
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findByIdAndCustomer(eq(expectedLoanToDeleteDTO.getId()), any(Customer.class)))
+        .thenReturn(Optional.of(expectedLoanToDelete));
+
+        doNothing().when(loanRepository).deleteByIdAndCustomer(eq(expectedLoanToDeleteDTO.getId()), any(Customer.class));
+
+        loanService.deleteByIdAndCustomer(authenticatedUser, expectedLoanToDeleteDTO.getId());
+
+        verify(loanRepository, times(1)).deleteByIdAndCustomer(eq(expectedLoanToDeleteDTO.getId()), any(Customer.class));
+    }
+
+    @Test
+    void whenNotExistingLoanIdIsInformedThenAnExceptionShouldBeThrown() {
+        LoanResponseDTO expectedLoanToDeleteDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+
+        when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
+        when(loanRepository.findByIdAndCustomer(eq(expectedLoanToDeleteDTO.getId()), any(Customer.class)))
+                .thenReturn(Optional.empty());
+
+        assertThrows(LoanNotFoundException.class, () -> loanService.deleteByIdAndCustomer(authenticatedUser, expectedLoanToDeleteDTO.getId()));
     }
 }

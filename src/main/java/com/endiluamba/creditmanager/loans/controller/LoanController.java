@@ -40,4 +40,11 @@ public class LoanController implements LoanControllerDocs {
     public List<LoanResponseDTO> findAllByCustomer(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         return loanService.findAllByCustomer(authenticatedUser);
     }
+
+    @DeleteMapping("/{loanId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteByIdAndCustomer(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                                      @PathVariable Long loanId) {
+        loanService.deleteByIdAndCustomer(authenticatedUser, loanId);
+    }
 }

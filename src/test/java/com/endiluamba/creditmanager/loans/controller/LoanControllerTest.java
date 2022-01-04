@@ -24,9 +24,9 @@ import static com.endiluamba.creditmanager.utils.JsonConversionUtils.asJsonStrin
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -107,10 +107,22 @@ public class LoanControllerTest {
         when(loanService.findAllByCustomer(any(AuthenticatedUser.class))).thenReturn(Collections.singletonList(expectedFoundLoanDTO));
 
         mockMvc.perform(get(LOANS_API_URL_PATH)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(expectedFoundLoanDTO.getId().intValue())))
                 .andExpect(jsonPath("$[0].loanAmount", is(expectedFoundLoanDTO.getLoanAmount())))
                 .andExpect(jsonPath("$[0].installments", is(expectedFoundLoanDTO.getInstallments())));
+    }
+
+    @Test
+    void whenDELETEIsCalledWithValidBookIdThenNoContentStatusShouldBeInformed() throws Exception {
+        LoanRequestDTO expectedLoanToDeleteDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
+
+        doNothing().when(loanService).deleteByIdAndCustomer(any(AuthenticatedUser.class), eq(expectedLoanToDeleteDTO.getId()));
+
+        mockMvc.perform(delete(LOANS_API_URL_PATH + "/" + expectedLoanToDeleteDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(expectedLoanToDeleteDTO)))
+                .andExpect(status().isNoContent());
     }
 }
