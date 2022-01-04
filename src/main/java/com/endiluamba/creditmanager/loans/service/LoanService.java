@@ -6,6 +6,8 @@ import com.endiluamba.creditmanager.customers.service.CustomerService;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
 import com.endiluamba.creditmanager.loans.entity.Loan;
+import com.endiluamba.creditmanager.loans.exception.FirstInstallmentDateIsBeyondMaxDateException;
+import com.endiluamba.creditmanager.loans.exception.InstallmentsLimitExceededException;
 import com.endiluamba.creditmanager.loans.exception.LoanAlreadyExistsException;
 import com.endiluamba.creditmanager.loans.exception.LoanNotFoundException;
 import com.endiluamba.creditmanager.loans.mapper.LoanMapper;
@@ -36,9 +38,15 @@ public class LoanService {
     public LoanResponseDTO create(AuthenticatedUser authenticatedUser, LoanRequestDTO loanRequestDTO) {
         Customer foundAuthenticatedCustomer = customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername());
         verifyIfLoanIsAlreadySubmitted(foundAuthenticatedCustomer, loanRequestDTO);
-
         Loan loanToCreate = loanMapper.toModel(loanRequestDTO);
+
+        verifyIfInstallmentsValueIsGreaterThan60(loanToCreate.getInstallments());
+
+        verifyIfFirstInstallmentDateIsBeyondMaxDate(loanToCreate.getFirstInstallmentDate());
+
+        String status = "Submitted";  //statuses "Approved" or "Rejected" are set by ADMIN with a PATCH request
         loanToCreate.setCustomer(foundAuthenticatedCustomer);
+        loanToCreate.setStatus(status);
         Loan createdLoan = loanRepository.save(loanToCreate);
 
         return loanMapper.toDTO(createdLoan);
@@ -82,4 +90,17 @@ public class LoanService {
                 });
     }
 
+    private void verifyIfInstallmentsValueIsGreaterThan60(int installments) {
+        if (installments > 60)
+            throw new InstallmentsLimitExceededException();
+    }
+
+    private void verifyIfFirstInstallmentDateIsBeyondMaxDate(LocalDate firstInstallmentDate) {
+        int maxMonths = 3;
+        LocalDate createdLoanDate = LocalDate.now();
+        LocalDate maxDate = createdLoanDate.plusMonths(maxMonths);
+
+        if (firstInstallmentDate.isAfter(maxDate))
+            throw new FirstInstallmentDateIsBeyondMaxDateException(maxDate);
+    }
 }

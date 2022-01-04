@@ -30,7 +30,6 @@ public class LoanResponseDTOBuilder {
         return new LoanResponseDTO(id,
                 loanAmount,
                 installments,
-                firstInstallmentDate
-        );
+                firstInstallmentDate);
     }
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -20,8 +21,7 @@ public class LoanRequestDTO {
     private Double loanAmount;
 
     @NotNull
-    @Max(60) //This requirement must be verified in LoanService in order to get a customized exception message
-    //otherwise the general message for code 400 in LoanControllerDocs or Postman will be displayed
+    //@Max(60) | It is better to implement this validation in LoanService.class with a customized exception message and let the users of this API to customize the field in the frontend.
     private Integer installments;
 
     @NotNull

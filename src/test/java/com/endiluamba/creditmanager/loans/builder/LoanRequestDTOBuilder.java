@@ -22,13 +22,15 @@ public class LoanRequestDTOBuilder {
     @Builder.Default
     private LocalDate firstInstallmentDate = LocalDate.of(2022, 01, 01);
 
+    @Builder.Default
+    private String status = "Submitted";
+
     private final CustomerDTO customerDTO = CustomerDTOBuilder.builder().build().buildCustomerDTO();
 
     public LoanRequestDTO buildLoanRequestDTO() {
         return new LoanRequestDTO(id,
                 loanAmount,
                 installments,
-                firstInstallmentDate
-                );
+                firstInstallmentDate);
     }
 }

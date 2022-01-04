@@ -152,7 +152,7 @@ public class LoanServiceTest {
 
         when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
         when(loanRepository.findByIdAndCustomer(eq(expectedLoanToDeleteDTO.getId()), any(Customer.class)))
-        .thenReturn(Optional.of(expectedLoanToDelete));
+                .thenReturn(Optional.of(expectedLoanToDelete));
 
         doNothing().when(loanRepository).deleteByIdAndCustomer(eq(expectedLoanToDeleteDTO.getId()), any(Customer.class));
 

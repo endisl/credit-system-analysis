@@ -24,6 +24,9 @@ public class Loan extends Auditable {
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDate firstInstallmentDate;
 
+    @Column(nullable = false)
+    private String status;
+
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Customer customer;
 }

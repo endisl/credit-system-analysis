@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +31,14 @@ public class CreditManagerExceptionHandler extends ResponseEntityExceptionHandle
 
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> handleEntityExistsException(EntityExistsException exception) {
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage(),
+                Collections.singletonList(exception.getMessage()));
+    }
+
+    @ExceptionHandler(PersistenceException.class)
+    public ResponseEntity<Object> handleEntityException(PersistenceException exception) {
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage(),
