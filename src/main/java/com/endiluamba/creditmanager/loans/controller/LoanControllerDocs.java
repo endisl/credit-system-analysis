@@ -3,6 +3,7 @@ package com.endiluamba.creditmanager.loans.controller;
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -18,7 +19,7 @@ public interface LoanControllerDocs {
             @ApiResponse(code = 201, message = "Loan successfully created"),
             @ApiResponse(code = 400, message = "Required Field missing or Field validation rules violated")
     })
-    LoanResponseDTO create(AuthenticatedUser authenticatedUser, LoanRequestDTO loanRequestDTO);
+    MessageDTO create(AuthenticatedUser authenticatedUser, LoanRequestDTO loanRequestDTO);
 
     @ApiOperation(value = "Loan find by id")
     @ApiResponses(value = {

@@ -3,6 +3,7 @@ package com.endiluamba.creditmanager.loans.controller;
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.loans.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,8 @@ public class LoanController implements LoanControllerDocs {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LoanResponseDTO create(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                  @RequestBody @Valid LoanRequestDTO loanRequestDTO) {
+    public MessageDTO create(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                             @RequestBody @Valid LoanRequestDTO loanRequestDTO) {
         return loanService.create(authenticatedUser, loanRequestDTO);
     }
 

@@ -4,10 +4,6 @@ import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
 import com.endiluamba.creditmanager.customers.enums.Role;
 import lombok.Builder;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.NotNull;
-
 @Builder
 public class CustomerDTOBuilder {
 

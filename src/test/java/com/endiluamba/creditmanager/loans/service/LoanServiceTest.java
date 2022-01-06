@@ -1,6 +1,7 @@
 package com.endiluamba.creditmanager.loans.service;
 
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
+import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
 import com.endiluamba.creditmanager.loans.builder.LoanRequestDTOBuilder;
@@ -19,13 +20,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -61,8 +62,8 @@ public class LoanServiceTest {
     @Test
     void whenNewLoanIsInformedThenItShouldBeCreated() {
         LoanRequestDTO expectedLoanToCreateDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
-        LoanResponseDTO expectedCreatedLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
-        Loan expectedCreatedLoan = loanMapper.toModel(expectedCreatedLoanDTO);
+        Loan expectedCreatedLoan = loanMapper.toModel(expectedLoanToCreateDTO);
+        String expectedCreationMessage = "Loan with ID 1 successfully submitted";
 
         when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
         when(loanRepository.findByLoanAmountAndInstallmentsAndFirstInstallmentDateAndCustomer(
@@ -70,11 +71,15 @@ public class LoanServiceTest {
                 eq(expectedLoanToCreateDTO.getInstallments()),
                 eq(expectedLoanToCreateDTO.getFirstInstallmentDate()),
                 any(Customer.class))).thenReturn(Optional.empty());
+
+        assertThat(expectedCreatedLoan.getInstallments(), is(lessThanOrEqualTo(60)));
+        assertThat(expectedCreatedLoan.getFirstInstallmentDate(), is(lessThanOrEqualTo(LocalDate.now().plusMonths(3))));
+
         when(loanRepository.save(any(Loan.class))).thenReturn(expectedCreatedLoan);
 
-        LoanResponseDTO createdLoanResponseDTO = loanService.create(authenticatedUser, expectedLoanToCreateDTO);
+        MessageDTO creationMessage = loanService.create(authenticatedUser, expectedLoanToCreateDTO);
 
-        assertThat(createdLoanResponseDTO, is(equalTo(expectedCreatedLoanDTO)));
+        assertThat(expectedCreationMessage, is(equalTo(creationMessage.getMessage())));
     }
 
     @Test
@@ -98,13 +103,24 @@ public class LoanServiceTest {
         LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
         LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
         Loan expectedFoundLoan = loanMapper.toModel(expectedFoundLoanDTO);
+        expectedFoundLoan.setCustomer(expectedFoundLoanDTO.getCustomer());
+
+        //expectedFoundLoan.getCustomer().setEmail(expectedFoundLoanDTO.getEmail());
+        //expectedFoundLoan.getCustomer().setIncome(expectedFoundLoanDTO.getIncome());
 
         when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
         when(loanRepository.findByIdAndCustomer(
                 eq(expectedLoanToFindDTO.getId()),
                 any(Customer.class))).thenReturn(Optional.of(expectedFoundLoan));
 
-        LoanResponseDTO foundLoanDTO = loanService.findByIdAndCustomer(authenticatedUser, expectedLoanToFindDTO.getId());
+        LoanResponseDTO foundLoanDTO = loanMapper.toDTO(expectedFoundLoan);
+        foundLoanDTO.setCustomer(expectedFoundLoan.getCustomer());
+        //foundLoanDTO.setIncome(expectedFoundLoan.getCustomer().getIncome());
+
+        //foundLoanDTO.setEmail("endi@web.com");
+        //foundLoanDTO.setIncome(1000.0);
+
+        foundLoanDTO = loanService.findByIdAndCustomer(authenticatedUser, expectedLoanToFindDTO.getId());
 
         assertThat(foundLoanDTO, is(equalTo(expectedFoundLoanDTO)));
     }

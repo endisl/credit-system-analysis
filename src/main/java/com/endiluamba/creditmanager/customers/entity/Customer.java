@@ -43,5 +43,4 @@ public class Customer extends Auditable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;
-
 }

@@ -3,8 +3,10 @@ package com.endiluamba.creditmanager.loans.service;
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
+import com.endiluamba.creditmanager.loans.Utils.MessageDTOUtils;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.loans.entity.Loan;
 import com.endiluamba.creditmanager.loans.exception.FirstInstallmentDateIsBeyondMaxDateException;
 import com.endiluamba.creditmanager.loans.exception.InstallmentsLimitExceededException;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.endiluamba.creditmanager.loans.Utils.MessageDTOUtils.*;
 
 @Service
 public class LoanService {
@@ -35,7 +39,7 @@ public class LoanService {
         this.customerService = customerService;
     }
 
-    public LoanResponseDTO create(AuthenticatedUser authenticatedUser, LoanRequestDTO loanRequestDTO) {
+    public MessageDTO create(AuthenticatedUser authenticatedUser, LoanRequestDTO loanRequestDTO) {
         Customer foundAuthenticatedCustomer = customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername());
         verifyIfLoanIsAlreadySubmitted(foundAuthenticatedCustomer, loanRequestDTO);
         Loan loanToCreate = loanMapper.toModel(loanRequestDTO);
@@ -44,19 +48,25 @@ public class LoanService {
 
         verifyIfFirstInstallmentDateIsBeyondMaxDate(loanToCreate.getFirstInstallmentDate());
 
-        String status = "Submitted";  //statuses "Approved" or "Rejected" are set by ADMIN with a PATCH request
+        String status = "Submitted";
         loanToCreate.setCustomer(foundAuthenticatedCustomer);
         loanToCreate.setStatus(status);
         Loan createdLoan = loanRepository.save(loanToCreate);
 
-        return loanMapper.toDTO(createdLoan);
+        return creationMessage(createdLoan);
     }
 
     public LoanResponseDTO findByIdAndCustomer(AuthenticatedUser authenticatedUser, Long loanId) {
         Customer foundAuthenticatedCustomer = customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername());
-        return loanRepository.findByIdAndCustomer(loanId, foundAuthenticatedCustomer)
-                .map(loanMapper::toDTO)
+
+        Loan foundLoan = loanRepository.findByIdAndCustomer(loanId, foundAuthenticatedCustomer)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
+
+        LoanResponseDTO loanResponseDTO = loanMapper.toDTO(foundLoan);
+        loanResponseDTO.setEmail(foundLoan.getCustomer().getEmail());
+        loanResponseDTO.setIncome(foundLoan.getCustomer().getIncome());
+
+        return loanResponseDTO;
     }
 
     public List<LoanResponseDTO> findAllByCustomer(AuthenticatedUser authenticatedUser) {

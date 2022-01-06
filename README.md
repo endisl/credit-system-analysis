@@ -1,3 +1,5 @@
+[add SonarCloud badge  
+do runner Test in Postman]
 # Sistema de Análise de Crédito
 
 ## Introdução  

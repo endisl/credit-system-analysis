@@ -20,7 +20,7 @@ public class LoanRequestDTOBuilder {
     private Integer installments = 30;
 
     @Builder.Default
-    private LocalDate firstInstallmentDate = LocalDate.of(2022, 01, 01);
+    private LocalDate firstInstallmentDate = LocalDate.of(2022, 2, 1);
 
     @Builder.Default
     private String status = "Submitted";

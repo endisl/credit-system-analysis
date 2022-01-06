@@ -13,9 +13,9 @@ public class MessageDTOUtils {
         return returnMessage(updatedCustomer, "updated");
     }
 
-    public static MessageDTO returnMessage(Customer updatedCustomer, String operation) {
-        String createdName = updatedCustomer.getName();
-        Long createdId = updatedCustomer.getId();
+    public static MessageDTO returnMessage(Customer customer, String operation) {
+        String createdName = customer.getName();
+        Long createdId = customer.getId();
         String createdCustomerMessage = String.format("Customer %s with ID %s successfully %s", createdName, createdId, operation);
         return MessageDTO.builder()
                 .message(createdCustomerMessage)

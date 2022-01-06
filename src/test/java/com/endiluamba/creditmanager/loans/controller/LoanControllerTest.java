@@ -1,6 +1,7 @@
 package com.endiluamba.creditmanager.loans.controller;
 
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
+import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.loans.builder.LoanRequestDTOBuilder;
 import com.endiluamba.creditmanager.loans.builder.LoanResponseDTOBuilder;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
@@ -60,17 +61,16 @@ public class LoanControllerTest {
     @Test
     void whenPOSTIsCalledThenCreatedStatusShouldBeReturned() throws Exception {
         LoanRequestDTO expectedLoanToCreateDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
-        LoanResponseDTO expectedCreatedLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        String expectedCreationMessage = "Loan with ID 1 successfully submitted";
+        MessageDTO expectedCreationMessageDTO = MessageDTO.builder().message(expectedCreationMessage).build();
 
-        when(loanService.create(any(AuthenticatedUser.class), eq(expectedLoanToCreateDTO))).thenReturn(expectedCreatedLoanDTO);
+        when(loanService.create(any(AuthenticatedUser.class), eq(expectedLoanToCreateDTO))).thenReturn(expectedCreationMessageDTO);
 
         mockMvc.perform(post(LOANS_API_URL_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(expectedLoanToCreateDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(expectedCreatedLoanDTO.getId().intValue())))
-                .andExpect(jsonPath("$.loanAmount", is(expectedCreatedLoanDTO.getLoanAmount())))
-                .andExpect(jsonPath("$.installments", is(expectedCreatedLoanDTO.getInstallments())));
+                .andExpect(jsonPath("$.message", is(expectedCreationMessage)));
     }
 
     @Test
