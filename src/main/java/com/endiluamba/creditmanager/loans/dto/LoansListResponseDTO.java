@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanResponseDTO {
+public class LoansListResponseDTO {
 
     private Long id;
 
@@ -17,9 +15,5 @@ public class LoanResponseDTO {
 
     private Integer installments;
 
-    private LocalDate firstInstallmentDate;
-
-    private String email;
-
-    private Double income;
+    private String status;
 }

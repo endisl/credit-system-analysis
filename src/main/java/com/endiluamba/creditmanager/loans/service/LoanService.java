@@ -3,9 +3,9 @@ package com.endiluamba.creditmanager.loans.service;
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
-import com.endiluamba.creditmanager.loans.Utils.MessageDTOUtils;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
 import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.loans.entity.Loan;
 import com.endiluamba.creditmanager.loans.exception.FirstInstallmentDateIsBeyondMaxDateException;
@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.endiluamba.creditmanager.loans.Utils.MessageDTOUtils.*;
+import static com.endiluamba.creditmanager.loans.Utils.MessageDTOUtils.creationMessage;
 
 @Service
 public class LoanService {
@@ -69,11 +69,11 @@ public class LoanService {
         return loanResponseDTO;
     }
 
-    public List<LoanResponseDTO> findAllByCustomer(AuthenticatedUser authenticatedUser) {
+    public List<LoansListResponseDTO> findAllByCustomer(AuthenticatedUser authenticatedUser) {
         Customer foundAuthenticatedCustomer = customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername());
         return loanRepository.findAllByCustomer(foundAuthenticatedCustomer)
                 .stream()
-                .map(loanMapper::toDTO)
+                .map(loanMapper::toListDTO)
                 .collect(Collectors.toList());
     }
 

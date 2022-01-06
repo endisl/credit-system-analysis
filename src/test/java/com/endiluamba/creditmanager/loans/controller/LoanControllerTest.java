@@ -1,6 +1,8 @@
 package com.endiluamba.creditmanager.loans.controller;
 
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
+import com.endiluamba.creditmanager.loans.builder.LoansListResponseDTOBuilder;
+import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
 import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.loans.builder.LoanRequestDTOBuilder;
 import com.endiluamba.creditmanager.loans.builder.LoanResponseDTOBuilder;
@@ -48,10 +50,13 @@ public class LoanControllerTest {
 
     private LoanResponseDTOBuilder loanResponseDTOBuilder;
 
+    private LoansListResponseDTOBuilder loansListResponseDTOBuilder;
+
     @BeforeEach
     void setUp() {
         loanRequestDTOBuilder = LoanRequestDTOBuilder.builder().build();
         loanResponseDTOBuilder = LoanResponseDTOBuilder.builder().build();
+        loansListResponseDTOBuilder = LoansListResponseDTOBuilder.builder().build();
         mockMvc = MockMvcBuilders.standaloneSetup(loanController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setViewResolvers((s, locale) -> new MappingJackson2JsonView())
@@ -102,16 +107,17 @@ public class LoanControllerTest {
 
     @Test
     void whenGETListIsCalledThenOkStatusShouldBeInformed() throws Exception {
-        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
+        LoansListResponseDTO expectedFoundLoansListDTO = loansListResponseDTOBuilder.buildLoansListResponseDTO();
 
-        when(loanService.findAllByCustomer(any(AuthenticatedUser.class))).thenReturn(Collections.singletonList(expectedFoundLoanDTO));
+        when(loanService.findAllByCustomer(any(AuthenticatedUser.class))).thenReturn(Collections.singletonList(expectedFoundLoansListDTO));
 
         mockMvc.perform(get(LOANS_API_URL_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(expectedFoundLoanDTO.getId().intValue())))
-                .andExpect(jsonPath("$[0].loanAmount", is(expectedFoundLoanDTO.getLoanAmount())))
-                .andExpect(jsonPath("$[0].installments", is(expectedFoundLoanDTO.getInstallments())));
+                .andExpect(jsonPath("$[0].id", is(expectedFoundLoansListDTO.getId().intValue())))
+                .andExpect(jsonPath("$[0].loanAmount", is(expectedFoundLoansListDTO.getLoanAmount())))
+                .andExpect(jsonPath("$[0].installments", is(expectedFoundLoansListDTO.getInstallments())))
+                .andExpect(jsonPath("$[0].status", is(expectedFoundLoansListDTO.getStatus())));
     }
 
     @Test

@@ -5,7 +5,6 @@ import com.endiluamba.creditmanager.customers.dto.JwtRequest;
 import com.endiluamba.creditmanager.customers.dto.JwtResponse;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

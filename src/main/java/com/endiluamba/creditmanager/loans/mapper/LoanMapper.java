@@ -2,6 +2,7 @@ package com.endiluamba.creditmanager.loans.mapper;
 
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
 import com.endiluamba.creditmanager.loans.entity.Loan;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -16,4 +17,8 @@ public interface LoanMapper {
     Loan toModel(LoanResponseDTO loanResponseDTO);
 
     LoanResponseDTO toDTO(Loan loan);
+
+    Loan toListModel(LoansListResponseDTO loansListResponseDTO);
+
+    LoansListResponseDTO toListDTO(Loan loan);
 }

@@ -1,6 +1,8 @@
 package com.endiluamba.creditmanager.loans.service;
 
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
+import com.endiluamba.creditmanager.loans.builder.LoansListResponseDTOBuilder;
+import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
 import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
@@ -50,12 +52,15 @@ public class LoanServiceTest {
 
     private LoanResponseDTOBuilder loanResponseDTOBuilder;
 
+    private LoansListResponseDTOBuilder loansListResponseDTOBuilder;
+
     private AuthenticatedUser authenticatedUser;
 
     @BeforeEach
     void setUp() {
         loanRequestDTOBuilder = LoanRequestDTOBuilder.builder().build();
         loanResponseDTOBuilder = LoanResponseDTOBuilder.builder().build();
+        loansListResponseDTOBuilder = LoansListResponseDTOBuilder.builder().build();
         authenticatedUser = new AuthenticatedUser("endi@web.com", "1234", "ADMIN");
     }
 
@@ -103,10 +108,7 @@ public class LoanServiceTest {
         LoanRequestDTO expectedLoanToFindDTO = loanRequestDTOBuilder.buildLoanRequestDTO();
         LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
         Loan expectedFoundLoan = loanMapper.toModel(expectedFoundLoanDTO);
-        expectedFoundLoan.setCustomer(expectedFoundLoanDTO.getCustomer());
-
-        //expectedFoundLoan.getCustomer().setEmail(expectedFoundLoanDTO.getEmail());
-        //expectedFoundLoan.getCustomer().setIncome(expectedFoundLoanDTO.getIncome());
+        expectedFoundLoan.setCustomer(LoanResponseDTOBuilder.getCustomer());
 
         when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
         when(loanRepository.findByIdAndCustomer(
@@ -114,11 +116,8 @@ public class LoanServiceTest {
                 any(Customer.class))).thenReturn(Optional.of(expectedFoundLoan));
 
         LoanResponseDTO foundLoanDTO = loanMapper.toDTO(expectedFoundLoan);
-        foundLoanDTO.setCustomer(expectedFoundLoan.getCustomer());
-        //foundLoanDTO.setIncome(expectedFoundLoan.getCustomer().getIncome());
-
-        //foundLoanDTO.setEmail("endi@web.com");
-        //foundLoanDTO.setIncome(1000.0);
+        foundLoanDTO.setEmail(expectedFoundLoan.getCustomer().getEmail());
+        foundLoanDTO.setIncome(expectedFoundLoan.getCustomer().getIncome());
 
         foundLoanDTO = loanService.findByIdAndCustomer(authenticatedUser, expectedLoanToFindDTO.getId());
 
@@ -137,17 +136,17 @@ public class LoanServiceTest {
 
     @Test
     void whenListLoansIsCalledThenItShouldBeReturned() {
-        LoanResponseDTO expectedFoundLoanDTO = loanResponseDTOBuilder.buildLoanResponseDTO();
-        Loan expectedFoundLoan = loanMapper.toModel(expectedFoundLoanDTO);
+        LoansListResponseDTO expectedFoundLoansListDTO = loansListResponseDTOBuilder.buildLoansListResponseDTO();
+        Loan expectedFoundLoansList = loanMapper.toListModel(expectedFoundLoansListDTO);
 
         when(customerService.verifyAndGetCustomerIfExists(authenticatedUser.getUsername())).thenReturn(new Customer());
         when(loanRepository.findAllByCustomer(
-                any(Customer.class))).thenReturn(Collections.singletonList(expectedFoundLoan));
+                any(Customer.class))).thenReturn(Collections.singletonList(expectedFoundLoansList));
 
-        List<LoanResponseDTO> returnedLoansResponseList = loanService.findAllByCustomer(authenticatedUser);
+        List<LoansListResponseDTO> returnedLoansResponseList = loanService.findAllByCustomer(authenticatedUser);
 
         assertThat(returnedLoansResponseList.size(), is(1));
-        assertThat(returnedLoansResponseList.get(0), is(equalTo(expectedFoundLoanDTO)));
+        assertThat(returnedLoansResponseList.get(0), is(equalTo(expectedFoundLoansListDTO)));
     }
 
     @Test
@@ -156,7 +155,7 @@ public class LoanServiceTest {
         when(loanRepository.findAllByCustomer(
                 any(Customer.class))).thenReturn(Collections.EMPTY_LIST);
 
-        List<LoanResponseDTO> returnedLoansResponseList = loanService.findAllByCustomer(authenticatedUser);
+        List<LoansListResponseDTO> returnedLoansResponseList = loanService.findAllByCustomer(authenticatedUser);
 
         assertThat(returnedLoansResponseList.size(), is(0));
     }

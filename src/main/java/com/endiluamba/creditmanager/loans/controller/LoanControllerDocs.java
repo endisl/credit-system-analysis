@@ -3,6 +3,7 @@ package com.endiluamba.creditmanager.loans.controller;
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
 import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +33,7 @@ public interface LoanControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Loans list successfully found")
     })
-    List<LoanResponseDTO> findAllByCustomer(AuthenticatedUser authenticatedUser);
+    List<LoansListResponseDTO> findAllByCustomer(AuthenticatedUser authenticatedUser);
 
 
     @ApiOperation(value = "Loan delete by id")

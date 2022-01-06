@@ -1,10 +1,6 @@
 package com.endiluamba.creditmanager.loans.exception;
 
-import com.endiluamba.creditmanager.customers.entity.Customer;
-
 import javax.persistence.EntityExistsException;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class LoanAlreadyExistsException extends EntityExistsException {

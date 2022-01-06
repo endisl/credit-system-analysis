@@ -24,20 +24,21 @@ public class LoanResponseDTOBuilder {
     @Builder.Default
     private LocalDate firstInstallmentDate = LocalDate.of(2022, 01, 01);
 
-    @Builder.Default
-    private Customer customer = new Customer() {{
-       setId(1L);
-       setName("Endi Luamba");
-       setCpf("99522425060");
-       setRg("332211447");
-       setEmail("endi@web.com");
-       setIncome(1000.0);
-       setAddress("123, Web, Dev, Javaland");
-       setPassword("1234");
-       setRole(Role.USER);
-    }};
-
     private final CustomerDTO customerDTO = CustomerDTOBuilder.builder().build().buildCustomerDTO();
+
+    public static Customer getCustomer() {
+        return new Customer() {{
+            setId(1L);
+            setName("Endi Luamba");
+            setCpf("99522425060");
+            setRg("332211447");
+            setEmail("endi@web.com");
+            setIncome(1000.0);
+            setAddress("123, Web, Dev, Javaland");
+            setPassword("1234");
+            setRole(Role.USER);
+        }};
+    }
 
     public LoanResponseDTO buildLoanResponseDTO() {
         return new LoanResponseDTO(id,
@@ -45,7 +46,6 @@ public class LoanResponseDTOBuilder {
                 installments,
                 firstInstallmentDate,
                 customerDTO.getEmail(),
-                customerDTO.getIncome(),
-                customer);
+                customerDTO.getIncome());
     }
 }

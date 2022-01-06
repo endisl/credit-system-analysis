@@ -3,6 +3,7 @@ package com.endiluamba.creditmanager.loans.controller;
 import com.endiluamba.creditmanager.customers.dto.AuthenticatedUser;
 import com.endiluamba.creditmanager.loans.dto.LoanRequestDTO;
 import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
+import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
 import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.loans.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class LoanController implements LoanControllerDocs {
     }
 
     @GetMapping
-    public List<LoanResponseDTO> findAllByCustomer(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+    public List<LoansListResponseDTO> findAllByCustomer(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         return loanService.findAllByCustomer(authenticatedUser);
     }
 
