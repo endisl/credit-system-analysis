@@ -31,7 +31,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         var jwtToken = "";
         
         var requestTokenHeader = request.getHeader("Authorization");
-        if(isTokenPresent(requestTokenHeader)) {
+
+        if(isTokenPresent(requestTokenHeader)){
             jwtToken = requestTokenHeader.substring(7);
             email = jwtTokenManager.getUsernameFromToken(jwtToken);
         } else {

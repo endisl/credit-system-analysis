@@ -8,6 +8,7 @@ import com.endiluamba.creditmanager.customers.service.AuthenticationService;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,10 +32,9 @@ public class CustomerController implements CustomerControllerDocs {
         return customerService.create(customerToCreateDTO);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        customerService.delete(id);
+    @PostMapping(value = "/authenticate")
+    public JwtResponse createAuthenticationToken(@RequestBody @Valid JwtRequest jwtRequest) {
+        return authenticationService.createAuthenticationToken(jwtRequest);
     }
 
     @PutMapping("/{id}")
@@ -42,8 +42,10 @@ public class CustomerController implements CustomerControllerDocs {
         return customerService.update(id, customerToUpdateDTO);
     }
 
-    @PostMapping(value = "/authenticate")
-    public JwtResponse createAuthenticationToken(@RequestBody @Valid JwtRequest jwtRequest) {
-        return authenticationService.createAuthenticationToken(jwtRequest);
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void delete(@PathVariable Long id) {
+        customerService.delete(id);
     }
 }
