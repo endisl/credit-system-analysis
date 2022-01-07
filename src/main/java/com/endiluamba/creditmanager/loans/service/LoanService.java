@@ -8,12 +8,11 @@ import com.endiluamba.creditmanager.loans.dto.LoanResponseDTO;
 import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
 import com.endiluamba.creditmanager.loans.dto.MessageDTO;
 import com.endiluamba.creditmanager.loans.entity.Loan;
-import com.endiluamba.creditmanager.loans.exception.FirstInstallmentDateIsBeyondMaxDateException;
-import com.endiluamba.creditmanager.loans.exception.InstallmentsLimitExceededException;
-import com.endiluamba.creditmanager.loans.exception.LoanAlreadyExistsException;
-import com.endiluamba.creditmanager.loans.exception.LoanNotFoundException;
+import com.endiluamba.creditmanager.loans.enums.Status;
+import com.endiluamba.creditmanager.loans.exception.*;
 import com.endiluamba.creditmanager.loans.mapper.LoanMapper;
 import com.endiluamba.creditmanager.loans.repository.LoanRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,13 +43,10 @@ public class LoanService {
         verifyIfLoanIsAlreadySubmitted(foundAuthenticatedCustomer, loanRequestDTO);
         Loan loanToCreate = loanMapper.toModel(loanRequestDTO);
 
-        verifyIfInstallmentsValueIsGreaterThan60(loanToCreate.getInstallments());
+        verifyInstallmentsAndFirstInstallmentDate(loanToCreate.getInstallments(), loanToCreate.getFirstInstallmentDate());
 
-        verifyIfFirstInstallmentDateIsBeyondMaxDate(loanToCreate.getFirstInstallmentDate());
-
-        String status = "Submitted";
         loanToCreate.setCustomer(foundAuthenticatedCustomer);
-        loanToCreate.setStatus(status);
+        loanToCreate.setStatus(Status.SUBMITTED);
         Loan createdLoan = loanRepository.save(loanToCreate);
 
         return creationMessage(createdLoan);
@@ -100,17 +96,19 @@ public class LoanService {
                 });
     }
 
-    private void verifyIfInstallmentsValueIsGreaterThan60(int installments) {
-        if (installments > 60)
-            throw new InstallmentsLimitExceededException();
-    }
-
-    private void verifyIfFirstInstallmentDateIsBeyondMaxDate(LocalDate firstInstallmentDate) {
+    @SneakyThrows
+    private void verifyInstallmentsAndFirstInstallmentDate(int installments, LocalDate firstInstallmentDate) {
         int maxMonths = 3;
         LocalDate createdLoanDate = LocalDate.now();
         LocalDate maxDate = createdLoanDate.plusMonths(maxMonths);
 
+        if (installments > 60 && firstInstallmentDate.isAfter(maxDate))
+            throw new InvalidLoanArgumentException(installments, maxDate);
+
+        if (installments > 60)
+            throw new InvalidLoanArgumentException(installments);
+
         if (firstInstallmentDate.isAfter(maxDate))
-            throw new FirstInstallmentDateIsBeyondMaxDateException(maxDate);
+            throw new InvalidLoanArgumentException(maxDate);
     }
 }

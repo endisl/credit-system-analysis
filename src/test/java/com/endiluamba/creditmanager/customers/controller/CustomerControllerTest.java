@@ -85,18 +85,6 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void whenDELETEIsCalledThenNoContentStatusShouldBeInformed() throws Exception {
-        CustomerDTO expectedCustomerToDeleteDTO = customerDTOBuilder.buildCustomerDTO();
-        var expectedCustomerToDeleteId = expectedCustomerToDeleteDTO.getId();
-
-        doNothing().when(customerService).delete(expectedCustomerToDeleteId);
-
-        mockMvc.perform(delete(CUSTOMERS_API_URL_PATH + "/" + expectedCustomerToDeleteId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
     void whenPUTIsCalledThenOkStatusShouldBeReturned() throws Exception {
         CustomerDTO expectedCustomerToUpdateDTO = customerDTOBuilder.buildCustomerDTO();
         expectedCustomerToUpdateDTO.setName("Endi Tequeiro");

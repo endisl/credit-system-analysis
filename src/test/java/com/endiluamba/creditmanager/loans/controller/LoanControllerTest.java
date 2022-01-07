@@ -116,8 +116,7 @@ public class LoanControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(expectedFoundLoansListDTO.getId().intValue())))
                 .andExpect(jsonPath("$[0].loanAmount", is(expectedFoundLoansListDTO.getLoanAmount())))
-                .andExpect(jsonPath("$[0].installments", is(expectedFoundLoansListDTO.getInstallments())))
-                .andExpect(jsonPath("$[0].status", is(expectedFoundLoansListDTO.getStatus())));
+                .andExpect(jsonPath("$[0].installments", is(expectedFoundLoansListDTO.getInstallments())));
     }
 
     @Test

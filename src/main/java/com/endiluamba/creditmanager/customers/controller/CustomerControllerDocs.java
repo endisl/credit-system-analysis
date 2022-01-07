@@ -18,13 +18,6 @@ public interface CustomerControllerDocs {
     })
     MessageDTO create(CustomerDTO customerToCreateDTO);
 
-    @ApiOperation(value = "Customer deletion operation")
-    @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Customer successfully deleted"),
-            @ApiResponse(code = 404, message = "Customer with informed id not found")
-    })
-    void delete(Long id);
-
     @ApiOperation(value = "Customer update operation")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Customer successfully updated"),

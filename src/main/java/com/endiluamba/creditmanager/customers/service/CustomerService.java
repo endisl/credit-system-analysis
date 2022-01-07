@@ -3,6 +3,7 @@ package com.endiluamba.creditmanager.customers.service;
 import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
 import com.endiluamba.creditmanager.customers.dto.MessageDTO;
 import com.endiluamba.creditmanager.customers.entity.Customer;
+import com.endiluamba.creditmanager.customers.enums.Role;
 import com.endiluamba.creditmanager.customers.exception.CustomerAlreadyExistsException;
 import com.endiluamba.creditmanager.customers.exception.CustomerNotFoundException;
 import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
@@ -35,6 +36,7 @@ public class CustomerService {
         verifyIfExists(customerToCreateDTO.getCpf(),customerToCreateDTO.getEmail());
         Customer customerToCreate = customerMapper.toModel(customerToCreateDTO);
         customerToCreate.setPassword(passwordEncoder.encode(customerToCreate.getPassword()));
+        customerToCreate.setRole(Role.USER);
         Customer createdCustomer = customerRepository.save(customerToCreate);
         return creationMessage(createdCustomer);
     }
@@ -44,16 +46,12 @@ public class CustomerService {
 
         customerToUpdateDTO.setId(foundCustomer.getId());
         Customer customerToUpdate = customerMapper.toModel(customerToUpdateDTO);
+        customerToUpdate.setRole(Role.USER);
         customerToUpdate.setPassword(passwordEncoder.encode(customerToUpdate.getPassword()));
         customerToUpdate.setCreatedDate(foundCustomer.getCreatedDate());
 
         Customer updatedCustomer = customerRepository.save(customerToUpdate);
         return updateMessage(updatedCustomer);
-    }
-
-    public void delete(Long id) {
-        verifyAndGetIfExists(id);
-        customerRepository.deleteById(id);
     }
 
     private Customer verifyAndGetIfExists(Long id) {

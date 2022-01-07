@@ -75,30 +75,6 @@ public class CustomerServiceTest {
     }
 
     @Test
-    void whenValidCustomerIdIsInformedThenItShouldBeDeleted() {
-        CustomerDTO expectedDeletedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
-        Customer expectedDeletedCustomer = customerMapper.toModel(expectedDeletedCustomerDTO);
-        var expectedDeletedCustomerId = expectedDeletedCustomerDTO.getId();
-
-        when(customerRepository.findById(expectedDeletedCustomerId)).thenReturn(Optional.of(expectedDeletedCustomer));
-        doNothing().when(customerRepository).deleteById(expectedDeletedCustomerId);
-
-        customerService.delete(expectedDeletedCustomerId);
-
-        verify(customerRepository, times(1)).deleteById(expectedDeletedCustomerId);
-    }
-
-    @Test
-    void whenInvalidCustomerIdIsInformedThenAnExceptionShouldBeThrown() {
-        CustomerDTO expectedDeletedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
-        var expectedDeletedCustomerId = expectedDeletedCustomerDTO.getId();
-
-        when(customerRepository.findById(expectedDeletedCustomerId)).thenReturn(Optional.empty());
-
-        assertThrows(CustomerNotFoundException.class, () -> customerService.delete(expectedDeletedCustomerId));
-    }
-
-    @Test
     void whenExistingCustomerIsInformedThenItShouldBeUpdated() {
         CustomerDTO expectedUpdatedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         expectedUpdatedCustomerDTO.setName("Endi Tequeiro");

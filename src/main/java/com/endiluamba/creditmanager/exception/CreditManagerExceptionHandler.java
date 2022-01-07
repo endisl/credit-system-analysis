@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,33 +36,33 @@ public class CreditManagerExceptionHandler extends ResponseEntityExceptionHandle
                 Collections.singletonList(exception.getMessage()));
     }
 
-    @ExceptionHandler(PersistenceException.class)
-    public ResponseEntity<Object> handleEntityException(PersistenceException exception) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleEntityException(Exception exception) {
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
-                exception.getMessage(),
+                "Invalid loan arguments.",
                 Collections.singletonList(exception.getMessage()));
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException exception,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
-
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<String> errors = new ArrayList<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(fieldError -> errors.add("Field " + fieldError.getField().toUpperCase() + " " + fieldError.getDefaultMessage()));
         exception.getBindingResult().getGlobalErrors()
                 .forEach(globalErrors -> errors.add("Object " + globalErrors.getObjectName() + " " + globalErrors.getDefaultMessage()));
 
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, "Informed argument(s) validation error(s)", errors);
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                "Invalid informed arguments.",
+                errors);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildResponseEntity(HttpStatus.BAD_REQUEST,
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
                 "Malformed JSON body and/or field error",
                 Collections.singletonList(exception.getLocalizedMessage()));
     }

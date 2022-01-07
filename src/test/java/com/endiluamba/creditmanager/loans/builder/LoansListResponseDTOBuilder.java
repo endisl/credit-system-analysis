@@ -1,6 +1,7 @@
 package com.endiluamba.creditmanager.loans.builder;
 
 import com.endiluamba.creditmanager.loans.dto.LoansListResponseDTO;
+import com.endiluamba.creditmanager.loans.enums.Status;
 import lombok.Builder;
 
 @Builder
@@ -16,7 +17,7 @@ public class LoansListResponseDTOBuilder {
     private Integer installments = 30;
 
     @Builder.Default
-    private String status = "Submitted";
+    private Status status = Status.SUBMITTED;
 
     public LoansListResponseDTO buildLoansListResponseDTO() {
         return new LoansListResponseDTO(id,

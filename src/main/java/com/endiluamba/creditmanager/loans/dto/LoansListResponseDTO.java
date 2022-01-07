@@ -1,5 +1,6 @@
 package com.endiluamba.creditmanager.loans.dto;
 
+import com.endiluamba.creditmanager.loans.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +16,5 @@ public class LoansListResponseDTO {
 
     private Integer installments;
 
-    private String status;
+    private Status status;
 }

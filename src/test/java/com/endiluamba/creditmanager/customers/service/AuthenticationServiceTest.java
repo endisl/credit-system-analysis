@@ -6,6 +6,7 @@ import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
 import com.endiluamba.creditmanager.customers.dto.JwtRequest;
 import com.endiluamba.creditmanager.customers.dto.JwtResponse;
 import com.endiluamba.creditmanager.customers.entity.Customer;
+import com.endiluamba.creditmanager.customers.enums.Role;
 import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
 import com.endiluamba.creditmanager.customers.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -25,7 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -61,6 +60,7 @@ public class AuthenticationServiceTest {
         JwtRequest jwtRequest = jwtRequestBuilder.buildJwtRequest();
         CustomerDTO expectedFoundCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         Customer expectedFoundCustomer = customerMapper.toModel(expectedFoundCustomerDTO);
+        expectedFoundCustomer.setRole(Role.USER);
         String expectedGeneratedToken = "mockToken";
 
         when(customerRepository.findByEmail(jwtRequest.getEmail())).thenReturn(Optional.of(expectedFoundCustomer));
@@ -75,7 +75,7 @@ public class AuthenticationServiceTest {
     void whenEmailIsInformedThenCustomerShouldBeReturned() {
         CustomerDTO expectedFoundCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         Customer expectedFoundCustomer = customerMapper.toModel(expectedFoundCustomerDTO);
-        SimpleGrantedAuthority expectedCustomerRole = new SimpleGrantedAuthority("ROLE_" + expectedFoundCustomerDTO.getRole().getDescription());
+        expectedFoundCustomer.setRole(Role.USER);
         String expectedEmail = expectedFoundCustomerDTO.getEmail();
 
         when(customerRepository.findByEmail(expectedEmail)).thenReturn(Optional.of(expectedFoundCustomer));
@@ -84,7 +84,6 @@ public class AuthenticationServiceTest {
 
         assertThat(userDetails.getUsername(), is(equalTo(expectedFoundCustomer.getEmail())));
         assertThat(userDetails.getPassword(), is(equalTo(expectedFoundCustomer.getPassword())));
-        assertTrue(userDetails.getAuthorities().contains(expectedCustomerRole));
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.endiluamba.creditmanager.customers.builder;
 
 import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
-import com.endiluamba.creditmanager.customers.enums.Role;
 import lombok.Builder;
 
 @Builder
@@ -31,9 +30,6 @@ public class CustomerDTOBuilder {
     @Builder.Default
     private String password = "1234";
 
-    @Builder.Default
-    private Role role = Role.USER;
-
     public CustomerDTO buildCustomerDTO() {
         return new CustomerDTO(id,
                 name,
@@ -42,8 +38,7 @@ public class CustomerDTOBuilder {
                 income,
                 address,
                 email,
-                password,
-                role);
+                password);
     }
 
 }

@@ -23,7 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String CUSTOMERS_API_URL = "/api/v1/customers/**";
+    private static final String CUSTOMERS_CREATE_URL = "/api/v1/customers";
+    private static final String CUSTOMERS_AUTH_URL = "/api/v1/customers/authenticate";
     private static final String LOANS_API_URL = "/api/v1/loans/**";
     private static final String H2_CONSOLE_URL = "/h2-console/**";
     private static final String SWAGGER_URL = "/swagger-ui.html";
@@ -63,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers(CUSTOMERS_API_URL, H2_CONSOLE_URL, SWAGGER_URL).permitAll()
+                .authorizeRequests().antMatchers(CUSTOMERS_CREATE_URL, CUSTOMERS_AUTH_URL, H2_CONSOLE_URL, SWAGGER_URL).permitAll()
                 .antMatchers(LOANS_API_URL).hasAnyRole(ROLE_ADMIN, ROLE_USER)
                 .anyRequest().authenticated()
                 .and()

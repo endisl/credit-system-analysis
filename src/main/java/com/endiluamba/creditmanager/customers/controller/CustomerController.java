@@ -8,7 +8,6 @@ import com.endiluamba.creditmanager.customers.service.AuthenticationService;
 import com.endiluamba.creditmanager.customers.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,12 +39,5 @@ public class CustomerController implements CustomerControllerDocs {
     @PutMapping("/{id}")
     public MessageDTO update(@PathVariable Long id, @RequestBody @Valid CustomerDTO customerToUpdateDTO) {
         return customerService.update(id, customerToUpdateDTO);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void delete(@PathVariable Long id) {
-        customerService.delete(id);
     }
 }

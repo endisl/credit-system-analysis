@@ -2,6 +2,7 @@ package com.endiluamba.creditmanager.loans.entity;
 
 import com.endiluamba.creditmanager.customers.entity.Customer;
 import com.endiluamba.creditmanager.entity.Auditable;
+import com.endiluamba.creditmanager.loans.enums.Status;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,8 +25,9 @@ public class Loan extends Auditable {
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDate firstInstallmentDate;
 
-    @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Status status;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Customer customer;
