@@ -21,16 +21,18 @@ No detalhe do empréstimo, devemos retornar: código do empréstimo, valor, quan
 
 ## Tecnologias utilizadas  
 
-Spring  
-Spring Data Jpa 
+Spring Boot
+Spring Data JPA 
 Spring Security 
+Spring Boot DevTools
 Spring Actuator 
 JUnit 
 MapStruct 
-Lombok 
-MySQL 
+Lombok
+Flyway
+MySQL Driver
 SonarCloud 
-Heroku 
+Heroku
 Docker 
 
 ## Entidades e DTO  

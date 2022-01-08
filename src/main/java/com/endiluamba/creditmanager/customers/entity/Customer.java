@@ -37,7 +37,7 @@ public class Customer extends Auditable {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY) //EAGER
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<Loan> loans;
 
     @Enumerated(EnumType.STRING)

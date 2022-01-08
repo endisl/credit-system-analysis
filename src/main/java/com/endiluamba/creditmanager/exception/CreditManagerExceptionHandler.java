@@ -40,13 +40,12 @@ public class CreditManagerExceptionHandler extends ResponseEntityExceptionHandle
     public ResponseEntity<Object> handleEntityException(Exception exception) {
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
-                "Invalid loan arguments.",
+                "Invalid arguments.",
                 Collections.singletonList(exception.getMessage()));
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<String> errors = new ArrayList<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(fieldError -> errors.add("Field " + fieldError.getField().toUpperCase() + " " + fieldError.getDefaultMessage()));
@@ -55,7 +54,7 @@ public class CreditManagerExceptionHandler extends ResponseEntityExceptionHandle
 
         return buildResponseEntity(
                 HttpStatus.BAD_REQUEST,
-                "Invalid informed arguments.",
+                "Invalid arguments.",
                 errors);
     }
 
