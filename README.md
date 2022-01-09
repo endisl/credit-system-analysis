@@ -21,6 +21,8 @@ No detalhe do empréstimo, devemos retornar: código do empréstimo, valor, quan
 
 ## Tecnologias utilizadas  
 
+IntelliJ IDEA
+VS Code
 Spring Boot
 Spring Data JPA 
 Spring Security 

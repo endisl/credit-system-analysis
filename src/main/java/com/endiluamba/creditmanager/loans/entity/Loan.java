@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
+@Table(name = "loans")
 public class Loan extends Auditable {
 
     @Id

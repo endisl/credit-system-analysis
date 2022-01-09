@@ -1,0 +1,13 @@
+CREATE TABLE customers (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    created_date TIMESTAMP NOT NULL,
+    last_modified_date TIMESTAMP,
+    name VARCHAR(255) NOT NULL,
+    cpf VARCHAR(255) NOT NULL,
+    rg VARCHAR(255) NOT NULL,
+    income DOUBLE NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

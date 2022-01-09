@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(name = "customers")
 public class Customer extends Auditable {
 
     @Id
@@ -31,7 +32,7 @@ public class Customer extends Auditable {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -41,6 +42,6 @@ public class Customer extends Auditable {
     private List<Loan> loans;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 10)
     private Role role;
 }
