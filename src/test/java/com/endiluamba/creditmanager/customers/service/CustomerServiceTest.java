@@ -4,6 +4,7 @@ import com.endiluamba.creditmanager.customers.builder.CustomerDTOBuilder;
 import com.endiluamba.creditmanager.customers.dto.CustomerDTO;
 import com.endiluamba.creditmanager.customers.dto.MessageDTO;
 import com.endiluamba.creditmanager.customers.entity.Customer;
+import com.endiluamba.creditmanager.customers.enums.Role;
 import com.endiluamba.creditmanager.customers.exception.CustomerAlreadyExistsException;
 import com.endiluamba.creditmanager.customers.exception.CustomerNotFoundException;
 import com.endiluamba.creditmanager.customers.mapper.CustomerMapper;
@@ -49,6 +50,7 @@ public class CustomerServiceTest {
     void whenNewCustomerIsInformedThenItShouldBeCreated() {
         CustomerDTO expectedCreatedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         Customer expectedCreatedCustomer = customerMapper.toModel(expectedCreatedCustomerDTO);
+        expectedCreatedCustomer.setRole(Role.USER);
         String expectedCreationMessage = "Customer Endi Luamba with ID 1 successfully created";
         String expectedCustomerCpf = expectedCreatedCustomerDTO.getCpf();
         String expectedCustomerEmail = expectedCreatedCustomerDTO.getEmail();
@@ -79,6 +81,7 @@ public class CustomerServiceTest {
         CustomerDTO expectedUpdatedCustomerDTO = customerDTOBuilder.buildCustomerDTO();
         expectedUpdatedCustomerDTO.setName("Endi Tequeiro");
         Customer expectedUpdatedCustomer = customerMapper.toModel(expectedUpdatedCustomerDTO);
+        expectedUpdatedCustomer.setRole(Role.USER);
         String expectedUpdateMessage = "Customer Endi Tequeiro with ID 1 successfully updated";
         var expectedUpdatedCustomerId = expectedUpdatedCustomerDTO.getId();
 

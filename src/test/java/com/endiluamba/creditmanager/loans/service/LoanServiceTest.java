@@ -77,8 +77,8 @@ public class LoanServiceTest {
                 eq(expectedLoanToCreateDTO.getFirstInstallmentDate()),
                 any(Customer.class))).thenReturn(Optional.empty());
 
-        assertThat(expectedCreatedLoan.getInstallments(), is(lessThanOrEqualTo(60)));
-        assertThat(expectedCreatedLoan.getFirstInstallmentDate(), is(lessThanOrEqualTo(LocalDate.now().plusMonths(3))));
+        assertThat(expectedCreatedLoan.getInstallments(), is((both(greaterThanOrEqualTo(1)).and(lessThanOrEqualTo(60)))));
+        assertThat(expectedCreatedLoan.getFirstInstallmentDate(), is((both(greaterThanOrEqualTo(LocalDate.now())).and(lessThanOrEqualTo(LocalDate.now().plusMonths(3))))));
 
         when(loanRepository.save(any(Loan.class))).thenReturn(expectedCreatedLoan);
 

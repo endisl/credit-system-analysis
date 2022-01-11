@@ -102,13 +102,16 @@ public class LoanService {
         LocalDate createdLoanDate = LocalDate.now();
         LocalDate maxDate = createdLoanDate.plusMonths(maxMonths);
 
-        if (installments > 60 && firstInstallmentDate.isAfter(maxDate))
+        boolean invalidInstallments = installments <= 0 || installments > 60;
+        boolean invalidDate = firstInstallmentDate.isBefore(createdLoanDate) || firstInstallmentDate.isAfter(maxDate);
+
+        if (invalidInstallments && invalidDate)
             throw new InvalidLoanArgumentException(installments, maxDate);
 
-        if (installments > 60)
+        if (invalidInstallments)
             throw new InvalidLoanArgumentException(installments);
 
-        if (firstInstallmentDate.isAfter(maxDate))
+        if (invalidDate)
             throw new InvalidLoanArgumentException(maxDate);
     }
 }

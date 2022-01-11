@@ -20,7 +20,7 @@ public class Loan extends Auditable {
     @Column(nullable = false)
     private double loanAmount;
 
-    @Column(columnDefinition = "integer default 0")
+    @Column(nullable = false)
     private int installments;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
