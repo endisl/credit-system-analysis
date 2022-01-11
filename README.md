@@ -78,6 +78,5 @@ http:localhost:8080/swagger-ui.html
 ```
 
 ## Link
-[Screenshots sobre diversas funcionalidades do sistema desenvolvido] (https://github.com/endisl/tqi_evolution_backend_2021/blob/master/project_screenshots.pptx)  
-São mostradas telas mostrando o cumprimento das regras de negócio mais a adição de uma regra que impede o cliente de fazer duas solicitações com as mesmas características,  
-ou seja, com o mesmo valor, o mesmo número de parcelas e a mesma data de pagamento da primeira parcela.  
+[Screenshots sobre diversas funcionalidades do sistema desenvolvido](https://github.com/endisl/tqi_evolution_backend_2021/blob/master/project_screenshots.pptx)  
+São mostradas telas mostrando o cumprimento das regras de negócio mais a adição de uma regra que impede o cliente de fazer duas solicitações com as mesmas características, ou seja, com o mesmo valor, o mesmo número de parcelas e a mesma data de pagamento da primeira parcela.  
