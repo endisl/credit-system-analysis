@@ -1,4 +1,3 @@
-[add SonarCloud badge]
 # Sistema de Análise de Crédito
 
 ## Introdução  
@@ -26,7 +25,6 @@ As seguintes ferramentas foram utilizadas para o desenvolvimento do projeto:
 - Banco de dados H2 em ambiente de desenvolvimento.
 - Banco de dados MySQL em ambiente de produção.
 - Dependências: Spring Web, Spring Data JPA, Spring Security, Spring Boot DevTools, Spring Actuator, JSON Web Token, JUnit, Lombok, MapStruct, Springfox, MySQL connector, Flyway. 
-- SonarCloud para a verificação da qualidade de código (ver badge acima).
 - Swagger 2 para a documentação de todos os endpoints desenvolvidos.
 - Git para o controle de versão e simulação de um fluxo de trabalho via criação de branches, pull requests e code reviews.
 - GitHub para o armazenamento do projeto na nuvem.
@@ -62,13 +60,6 @@ As seguintes ferramentas foram utilizadas para o desenvolvimento do projeto:
 - Desenvolvimento de testes unitários para validação e evolução segura de novas funcionalidades.
   Tratamento de exceções. O Sitema desenvolvido conta com uma ampla cobertura de exceções geradas no cadastramento e na autenticação de clientes, e na solicitação de empréstimos.
   Documentação das operações HTTP com o Swagger e implantação do Sistema na nuvem através do Heroku.
-  Estas e outras funcionalidades são apresentadas neste [document].
-
-## Regras de Negócio
-A seguir são mostradas telas mostrando o cumprimento das regras de negócio.
-Outra regra acrescentado diz respeito a impedir o cliente de fazer duas solicitações com as mesmas características, ou seja,
-com o mesmo valor, o mesmo número de parcelas e a mesma data de pagamento da primeira parcela.
-[pictures]
 
 ## Execução da aplicação
 Para executar o projeto em ambiente de desenvolvimento, comentar as dependencias do MySQL connector e do Flyway no pom.xml, 
@@ -87,5 +78,7 @@ http:localhost:8080/swagger-ui.html
 ``
 
 ## Link
-Screenshots sobre diversas funcionalidades do sistema desenvolvido.
 [Link]
+Screenshots sobre diversas funcionalidades do sistema desenvolvido.  
+São mostradas telas mostrando o cumprimento das regras de negócio mais a adição de uma regra que impede o cliente de fazer duas solicitações com as mesmas características,  
+ou seja, com o mesmo valor, o mesmo número de parcelas e a mesma data de pagamento da primeira parcela.  
