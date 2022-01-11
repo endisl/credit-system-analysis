@@ -65,20 +65,19 @@ As seguintes ferramentas foram utilizadas para o desenvolvimento do projeto:
 Para executar o projeto em ambiente de desenvolvimento, comentar as dependencias do MySQL connector e do Flyway no pom.xml, 
 e alterar o valor do active profile para "dev" no arquivo application.properties.
 A execução do projeto no terminal pode ser feita via comando:  
-``
+```
 mvn spring-boot:run
-``
+```
 O endpoint de entrada do projeto é:  
-``
+```
 http:localhost:8080/api/v1/customers
-``
+```
 A doumentação pode ser acessada em:  
-``
+```
 http:localhost:8080/swagger-ui.html
-``
+```
 
 ## Link
-[Link]
-Screenshots sobre diversas funcionalidades do sistema desenvolvido.  
+[Screenshots sobre diversas funcionalidades do sistema desenvolvido] (https://github.com/endisl/tqi_evolution_backend_2021/blob/master/project_screenshots.pptx)  
 São mostradas telas mostrando o cumprimento das regras de negócio mais a adição de uma regra que impede o cliente de fazer duas solicitações com as mesmas características,  
 ou seja, com o mesmo valor, o mesmo número de parcelas e a mesma data de pagamento da primeira parcela.  
