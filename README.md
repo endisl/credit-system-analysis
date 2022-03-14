@@ -36,7 +36,7 @@ As seguintes ferramentas foram utilizadas para o desenvolvimento do projeto:
 ## Funcionalidades implementadas
 
 - Criação de modelos de dados Customer (Cliente) e Loan (Empréstimo) para o mapeamento de entidades em bancos de dados.
-  Para cada modelo, são criados um controller para receber as requisições HTTP, um repositório que extende a interface JpaRepository, e um serviço para o processamento das requisições e a implementação das regras do negócio.
+  Para cada modelo, são criados um controller para receber as requisições HTTP, um repositório que extende a interface JpaRepository, e um serviço para o processamento das requisições e a implementação das regras de negócio.
   Com isso as responsabilidades de cada classe são bem separadas, o que resulta por exemplo em controllers com implementações mais limpas.
 
 - Desenvolvimento de operações de gerenciamento de clientes e empréstimos de acordo com o padrão arquitetural REST.
@@ -57,7 +57,7 @@ As seguintes ferramentas foram utilizadas para o desenvolvimento do projeto:
   Numa evolução do sistema, o administrador poderá por exemplo estar cadastrado diretamente no banco de dados, e realizar operações de listar e deletar clientes, aprovar ou rejeitar solicitações de empréstimos.  
   Atualmente todas as solicitações de empréstimos recebem automaticamente, conforme esperado, o status "Submetido", e numa evolução do sistema, os clientes podem deletar somente empréstimos com esse status.
 
-- Desenvolvimento de testes unitários para validação e evolução segura de novas funcionalidades.
+- Desenvolvimento de testes unitários para validação e implementação segura de novas funcionalidades.
   Tratamento de exceções. O Sitema desenvolvido conta com uma ampla cobertura de exceções geradas no cadastramento e na autenticação de clientes, e na solicitação de empréstimos.
   Documentação das operações HTTP com o Swagger e implantação do Sistema na nuvem através do Heroku.
 
